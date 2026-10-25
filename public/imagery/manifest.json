@@ -1,0 +1,124 @@
+{
+  "scenes": [
+    {
+      "id": "aral",
+      "title": "Aral Sea shoreline retreat",
+      "location": "South Aral Sea, Central Asia",
+      "dates": [
+        "2000-08-25",
+        "2014-08-19"
+      ],
+      "bbox": [
+        58,
+        43,
+        61.5,
+        46.5
+      ],
+      "layer": "MODIS_Terra_CorrectedReflectance_TrueColor",
+      "sensor": "Terra / MODIS",
+      "color": "Natural color",
+      "article": "https://science.nasa.gov/earth/earth-observatory/the-aral-sea-loses-its-eastern-lobe-84437/",
+      "description": "Real satellite comparison of the South Aral Sea. The eastern basin is visibly smaller and largely dry in the later image. This is contextual source information, not a classification produced by TerraLens.",
+      "caveats": [
+        "Some clouds near the upper left in the baseline.",
+        "Seasonal surface color, residual registration, atmospheric differences, and changing water color can create candidate differences.",
+        "MODIS browse imagery is regional-scale; not suitable for claims about individual roads or buildings."
+      ],
+      "width": 1000,
+      "height": 1000,
+      "synthetic": false,
+      "crs": "EPSG:4326",
+      "bboxOrder": "west,south,east,north",
+      "georeferencing": "Exact output bounds specified in the NASA GIBS WMS 1.1.1 request; north-up, linear longitude/latitude raster. Service geolocation is not independently surveyed.",
+      "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+      "attribution": "NASA GIBS / ESDIS, Terra / MODIS.",
+      "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+      "files": [
+        {
+          "role": "before",
+          "date": "2000-08-25",
+          "file": "aral-before.jpg",
+          "originalFile": "aral-before.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=58,43,61.5,46.5&WIDTH=1000&HEIGHT=1000&TIME=2000-08-25",
+          "sha256": "6c4940b8ca010feee261edf28a74c9bdb1e2bce185c07f0071413490b13e7a1a",
+          "preparation": "Converted GIBS PNG to RGB JPEG quality 94. No geometric edits, invented overlays, or content replacement."
+        },
+        {
+          "role": "after",
+          "date": "2014-08-19",
+          "file": "aral-after.jpg",
+          "originalFile": "aral-after.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=58,43,61.5,46.5&WIDTH=1000&HEIGHT=1000&TIME=2014-08-19",
+          "sha256": "6e35a25a11f9f87317c46577638f65f8e32dc596ca135e970e251283d0326ac0",
+          "preparation": "Converted GIBS PNG to RGB JPEG quality 94. No geometric edits, invented overlays, or content replacement."
+        }
+      ]
+    },
+    {
+      "id": "pakistan",
+      "title": "Indus floodplain change",
+      "location": "Sindh, Pakistan",
+      "dates": [
+        "2022-08-04",
+        "2022-08-28"
+      ],
+      "bbox": [
+        67.55,
+        26.9,
+        68.2,
+        27.55
+      ],
+      "layer": "VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1",
+      "sensor": "NOAA-20 / VIIRS",
+      "color": "False color (M11-I2-I1)",
+      "article": "https://science.nasa.gov/earth/earth-observatory/devastating-floods-in-pakistan-150279/",
+      "description": "Real satellite comparison during the August 2022 Pakistan floods. Water-related visual changes are evident around the Indus floodplain. This is contextual source information, not a classification produced by TerraLens.",
+      "caveats": [
+        "Both dates contain clouds and cloud shadows; these must not be interpreted automatically as terrain change.",
+        "False-color rendered imagery, not raw spectral reflectance.",
+        "VIIRS regional-scale visualization cannot establish road passability or individual building damage."
+      ],
+      "width": 325,
+      "height": 325,
+      "synthetic": false,
+      "crs": "EPSG:4326",
+      "bboxOrder": "west,south,east,north",
+      "georeferencing": "Bounds derived exactly from pixel crop of the original EPSG:4326 WMS raster, using its declared bounds and dimensions.",
+      "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+      "attribution": "NASA GIBS / ESDIS, NOAA-20 / VIIRS.",
+      "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+      "files": [
+        {
+          "role": "before",
+          "date": "2022-08-04",
+          "file": "pakistan-focused-before.jpg",
+          "originalFile": "pakistan-before.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-04",
+          "sha256": "ff3297a7e9c7c73457d2c0fa5e759d54348a8c05d1b2389e08bcdf6f6aae32ed",
+          "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+        },
+        {
+          "role": "after",
+          "date": "2022-08-28",
+          "file": "pakistan-focused-after.jpg",
+          "originalFile": "pakistan-after.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-28",
+          "sha256": "ad65f72a2bd5cae170bba33dc19d3409f92f03cbaf901f2c7bb803b64c07286d",
+          "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+        }
+      ],
+      "cropFromOriginal": [
+        275,
+        475,
+        600,
+        800
+      ]
+    }
+  ],
+  "retrievedDate": "2026-10-25",
+  "acknowledgment": "We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).",
+  "coordinateTransform": "For pixel center (x,y) in W by H image: longitude=west+(x+0.5)/W*(east-west); latitude=north-(y+0.5)/H*(north-south). Use EPSG:4326 map or reproject raster for other projections.",
+  "notes": "Context articles describe same events and dates, but these assets are independent GIBS exports, not the annotated Earth Observatory article graphics. Export grid size is not sensor spatial resolution. No detection accuracy is claimed."
+}

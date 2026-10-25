@@ -1,0 +1,124 @@
+[
+  {
+    "id": "pakistan-corridor",
+    "title": "Indus floodplain corridor",
+    "location": "Sindh, Pakistan",
+    "dates": [
+      "2022-08-04",
+      "2022-08-28"
+    ],
+    "bbox": [
+      67.2,
+      26.9,
+      68.2,
+      28.0
+    ],
+    "layer": "VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1",
+    "sensor": "NOAA-20 / VIIRS",
+    "color": "False color (M11-I2-I1)",
+    "article": "https://science.nasa.gov/earth/earth-observatory/devastating-floods-in-pakistan-150279/",
+    "description": "Real satellite comparison during the August 2022 Pakistan floods. Water-related visual changes are evident around the Indus floodplain. This is contextual source information, not a classification produced by TerraLens.",
+    "caveats": [
+      "Both dates contain clouds and cloud shadows; these must not be interpreted automatically as terrain change.",
+      "False-color rendered imagery, not raw spectral reflectance.",
+      "VIIRS regional-scale visualization cannot establish road passability or individual building damage."
+    ],
+    "width": 500,
+    "height": 550,
+    "synthetic": false,
+    "crs": "EPSG:4326",
+    "bboxOrder": "west,south,east,north",
+    "georeferencing": "Bounds derived exactly from pixel crop of the original EPSG:4326 WMS raster, using its declared bounds and dimensions.",
+    "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+    "attribution": "NASA GIBS / ESDIS, NOAA-20 / VIIRS.",
+    "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+    "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+    "files": [
+      {
+        "role": "before",
+        "date": "2022-08-04",
+        "file": "pakistan-corridor-before.jpg",
+        "originalFile": "pakistan-before.png",
+        "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-04",
+        "sha256": "b4be25a1ce5e82e673e33ab1051b4efe029908720f870c217aacc6c77dd69bc8",
+        "preparation": "Exact integer pixel crop [100, 250, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+      },
+      {
+        "role": "after",
+        "date": "2022-08-28",
+        "file": "pakistan-corridor-after.jpg",
+        "originalFile": "pakistan-after.png",
+        "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-28",
+        "sha256": "ff8575050540cdce527b3124f7329589b147caf0a9ea7ee2f54b748ebc3be66b",
+        "preparation": "Exact integer pixel crop [100, 250, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+      }
+    ],
+    "cropFromOriginal": [
+      100,
+      250,
+      600,
+      800
+    ]
+  },
+  {
+    "id": "pakistan-focused",
+    "title": "Indus floodplain corridor",
+    "location": "Sindh, Pakistan",
+    "dates": [
+      "2022-08-04",
+      "2022-08-28"
+    ],
+    "bbox": [
+      67.55,
+      26.9,
+      68.2,
+      27.55
+    ],
+    "layer": "VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1",
+    "sensor": "NOAA-20 / VIIRS",
+    "color": "False color (M11-I2-I1)",
+    "article": "https://science.nasa.gov/earth/earth-observatory/devastating-floods-in-pakistan-150279/",
+    "description": "Real satellite comparison during the August 2022 Pakistan floods. Water-related visual changes are evident around the Indus floodplain. This is contextual source information, not a classification produced by TerraLens.",
+    "caveats": [
+      "Both dates contain clouds and cloud shadows; these must not be interpreted automatically as terrain change.",
+      "False-color rendered imagery, not raw spectral reflectance.",
+      "VIIRS regional-scale visualization cannot establish road passability or individual building damage."
+    ],
+    "width": 325,
+    "height": 325,
+    "synthetic": false,
+    "crs": "EPSG:4326",
+    "bboxOrder": "west,south,east,north",
+    "georeferencing": "Bounds derived exactly from pixel crop of the original EPSG:4326 WMS raster, using its declared bounds and dimensions.",
+    "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+    "attribution": "NASA GIBS / ESDIS, NOAA-20 / VIIRS.",
+    "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+    "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+    "files": [
+      {
+        "role": "before",
+        "date": "2022-08-04",
+        "file": "pakistan-focused-before.jpg",
+        "originalFile": "pakistan-before.png",
+        "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-04",
+        "sha256": "ff3297a7e9c7c73457d2c0fa5e759d54348a8c05d1b2389e08bcdf6f6aae32ed",
+        "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+      },
+      {
+        "role": "after",
+        "date": "2022-08-28",
+        "file": "pakistan-focused-after.jpg",
+        "originalFile": "pakistan-after.png",
+        "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-28",
+        "sha256": "ad65f72a2bd5cae170bba33dc19d3409f92f03cbaf901f2c7bb803b64c07286d",
+        "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+      }
+    ],
+    "cropFromOriginal": [
+      275,
+      475,
+      600,
+      800
+    ]
+  }
+]
