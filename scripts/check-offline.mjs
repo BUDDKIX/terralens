@@ -87,12 +87,26 @@ for (const file of [
   assert.ok(
     (await (await request("/imagery/" + file)).arrayBuffer()).byteLength > 10,
   );
+// Verify every generated resource, including the worker and stylesheet, byte-for-byte.
+async function checkAssets(directory) {
+  for (const entry of await fs.readdir(directory, {withFileTypes:true})) {
+    const local = path.join(directory, entry.name);
+    if (entry.isDirectory()) { await checkAssets(local); continue; }
+    if (entry.name === "sw.js") continue;
+    const url = "/" + path.relative("dist",local).replaceAll("\\", "/");
+    const cached = await request(url);
+    assert.ok(cached, `Missing cached response: ${url}`);
+    assert.deepEqual(Buffer.from(await cached.arrayBuffer()),await fs.readFile(local),url);
+  }
+}
+await checkAssets("dist");
+assert.equal(await (await request("/offline-navigation", "navigate")).text(), html);
 const manifest = JSON.parse(
   await (await request("/imagery/manifest.json")).text(),
 );
 assert.equal(manifest.scenes.length, 2);
 console.log(
-  "PASS: generated service worker installs all local assets and serves HTML, bundle, scene metadata and both image pairs with fetch offline in the harness.",
+  "PASS: generated service worker installs all local assets and serves every generated asset byte-for-byte (including worker and CSS), navigation fallback, scene metadata and both image pairs with fetch offline in the harness.",
 );
 console.log(
   "Limit: browser service-worker registration, lifecycle, storage eviction, and real offline reload remain unverified.",

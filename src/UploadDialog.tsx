@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Upload, X, ArrowUpRight } from "lucide-react";
 import { fileData, validatePair } from "./images";
+import { validateMetadata } from "./metadata.mjs";
 import { pixelToGeo } from "./engine.mjs";
 import type { Pair, Bounds } from "./types";
 export default function UploadDialog({
@@ -19,7 +20,10 @@ export default function UploadDialog({
     [busy, setBusy] = useState(false),
     [geo, setGeo] = useState(false),
     [bounds, setBounds] = useState(["", "", "", ""]),
-    [dates, setDates] = useState(["", ""]);
+    [dates, setDates] = useState(["", ""]),
+    [organization, setOrganization] = useState(""),
+    [attribution, setAttribution] = useState(""),
+    [urls, setURLs] = useState(["", ""]);
   const active = useRef(true);
   useEffect(() => {
     active.current = true;
@@ -29,10 +33,11 @@ export default function UploadDialog({
   }, []);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!before || !after) return;
+    if (busy || !before || !after) return;
     setBusy(true);
     setError("");
     try {
+      const metadata = validateMetadata({ dates, organization, attribution, urls });
       const [a, b] = await Promise.all([fileData(before), fileData(after)]);
       const dimensions = await validatePair(a, b);
       if (!active.current) return;
@@ -56,7 +61,9 @@ export default function UploadDialog({
           location: geo
             ? "User-supplied geographic extent"
             : "Unreferenced imagery",
-          dates,
+          dates: metadata.dates,
+          metadataOrigin: "user",
+          sourceOrganization: metadata.organization,
           bbox,
           sensor: "User upload",
           color: "Rendered RGB",
@@ -67,8 +74,8 @@ export default function UploadDialog({
           ],
           alignment:
             "User upload. No automatic registration performed. Analyst alignment inspection required.",
-          attribution: "User-supplied imagery",
-          files: [{ file: before.name }, { file: after.name }],
+          attribution: metadata.attribution || "User-supplied imagery",
+          files: [{ file: before.name, sourceUrl: metadata.urls[0] || undefined }, { file: after.name, sourceUrl: metadata.urls[1] || undefined }],
         },
       });
     } catch (e) {
@@ -171,6 +178,11 @@ export default function UploadDialog({
               </label>
             ))}
           </div>
+          <details className="advanced"><summary>Source attribution (optional)</summary>
+            <div className="form-grid"><label>Source organization<input disabled={busy} maxLength={200} value={organization} onChange={e=>setOrganization(e.target.value)}/></label><label>Attribution<input disabled={busy} maxLength={1000} value={attribution} onChange={e=>setAttribution(e.target.value)}/></label></div>
+            <div className="form-grid">{["Before source URL", "After source URL"].map((label,i)=><label key={label}>{label}<input disabled={busy} type="url" value={urls[i]} onChange={e=>setURLs(u=>u.map((v,j)=>i===j?e.target.value:v))}/></label>)}</div>
+            <p className="fineprint">Dates, sources and bounds are user-provided metadata, not independently verified.</p>
+          </details>
           <label className="checkbox">
             <input
               type="checkbox"

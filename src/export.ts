@@ -12,17 +12,15 @@ export async function createReport(
   c.width = result.width;
   c.height = result.height;
   const ctx = c.getContext("2d")!;
-  ctx.drawImage(await loadImage(pair.after), 0, 0, c.width, c.height);
+  const afterImage = await loadImage(pair.after);
+  ctx.drawImage(afterImage, 0, 0, c.width, c.height);
   ctx.globalAlpha = 0.65;
   ctx.drawImage(await loadImage(maskData(result)), 0, 0);
   ctx.globalAlpha = 1;
   // Reuse decoded originals and render sequentially, rather than decoding full images for every region.
-  const beforeImage = await loadImage(pair.before),
-    afterImage = await loadImage(pair.after);
+  const beforeImage = await loadImage(pair.before);
   const evidence = [];
-  for (const r of result.regions.filter(
-    (r, i) => i < 5 || (reviews[r.id] && reviews[r.id].status !== "unreviewed"),
-  )) {
+  for (const r of [...result.regions].sort((a,b)=>b.area-a.area).slice(0,5)) {
     evidence.push({
       id: r.id,
       before: await cropData(beforeImage, r, result),

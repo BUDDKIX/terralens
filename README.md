@@ -1,5 +1,7 @@
 # TerraLens
 
+Latest release checks and remaining browser acceptance: [FINAL-VALIDATION.md](validation/FINAL-VALIDATION.md).
+
 A browser-based satellite change-review workspace for Defense Hackathon Problem Statement 3.
 
 **Workflow:** one continuous dark workstation: load imagery → analyze → inspect findings → optional review → report/export. Comparison slider, side-by-side imagery and change-mask modes share the same viewer.

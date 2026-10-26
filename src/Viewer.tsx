@@ -22,6 +22,7 @@ export default function Viewer({
   >(result ? "Compare" : "Side by Side");
   const clipId = useId().replaceAll(":", "");
   const [split, setSplit] = useState(50);
+  const [allBoxes, setAllBoxes] = useState(false);
   const [zoom, setZoom] = useState(1),
     [pan, setPan] = useState({ x: 0, y: 0 });
   const drag = useRef<{
@@ -54,6 +55,7 @@ export default function Viewer({
           ))}
         </div>
         <div className="zoom-controls">
+          {mode === "Changes" && result && <button aria-pressed={allBoxes} title="The full pixel mask remains visible. Show all observation rectangles." onClick={()=>setAllBoxes(v=>!v)}>{allBoxes ? "Hide extra boxes" : "All boxes"}</button>}
           <button
             aria-label="Zoom out"
             disabled={zoom <= 1}
@@ -179,7 +181,8 @@ export default function Viewer({
                         />
                       )}
                       {result.regions
-                        .filter((r) => mode === "Changes" || r.id === selected)
+                        .filter((r, index) => r.id === selected || (mode === "Changes" && (allBoxes || index < 5)))
+                        .sort((a,b)=>Number(a.id === selected)-Number(b.id === selected))
                         .map((r) => (
                           <g
                             key={r.id}

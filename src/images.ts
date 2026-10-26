@@ -19,6 +19,7 @@ export async function fileData(file: File): Promise<string> {
     const r = new FileReader();
     r.onload = () => resolve(String(r.result));
     r.onerror = () => reject(new Error("Unable to read image."));
+    r.onabort = () => reject(new Error("Image read was interrupted."));
     r.readAsDataURL(file);
   });
 }
@@ -87,8 +88,8 @@ export async function cropData(
     h = Math.min(result.height, y1 + margin) - top;
   const c = document.createElement("canvas");
   const s = Math.min(1, 340 / Math.max(w, h));
-  c.width = Math.round(w * s);
-  c.height = Math.round(h * s);
+  c.width = Math.max(1, Math.round(w * s));
+  c.height = Math.max(1, Math.round(h * s));
   c.getContext("2d")!.drawImage(
     image,
     (left / result.width) * image.width,

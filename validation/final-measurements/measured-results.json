@@ -1,0 +1,3011 @@
+[
+  {
+    "scene": {
+      "id": "aral",
+      "title": "Aral Sea shoreline retreat",
+      "location": "South Aral Sea, Central Asia",
+      "dates": [
+        "2000-08-25",
+        "2014-08-19"
+      ],
+      "bbox": [
+        58,
+        43,
+        61.5,
+        46.5
+      ],
+      "layer": "MODIS_Terra_CorrectedReflectance_TrueColor",
+      "sensor": "Terra / MODIS",
+      "color": "Natural color",
+      "article": "https://science.nasa.gov/earth/earth-observatory/the-aral-sea-loses-its-eastern-lobe-84437/",
+      "description": "Real satellite comparison of the South Aral Sea. The eastern basin is visibly smaller and largely dry in the later image. This is contextual source information, not a classification produced by TerraLens.",
+      "caveats": [
+        "Some clouds near the upper left in the baseline.",
+        "Seasonal surface color, residual registration, atmospheric differences, and changing water color can create candidate differences.",
+        "MODIS browse imagery is regional-scale; not suitable for claims about individual roads or buildings."
+      ],
+      "width": 1000,
+      "height": 1000,
+      "synthetic": false,
+      "crs": "EPSG:4326",
+      "bboxOrder": "west,south,east,north",
+      "georeferencing": "Exact output bounds specified in the NASA GIBS WMS 1.1.1 request; north-up, linear longitude/latitude raster. Service geolocation is not independently surveyed.",
+      "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+      "attribution": "NASA GIBS / ESDIS, Terra / MODIS.",
+      "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+      "files": [
+        {
+          "role": "before",
+          "date": "2000-08-25",
+          "file": "aral-before.jpg",
+          "originalFile": "aral-before.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=58,43,61.5,46.5&WIDTH=1000&HEIGHT=1000&TIME=2000-08-25",
+          "sha256": "6c4940b8ca010feee261edf28a74c9bdb1e2bce185c07f0071413490b13e7a1a",
+          "preparation": "Converted GIBS PNG to RGB JPEG quality 94. No geometric edits, invented overlays, or content replacement."
+        },
+        {
+          "role": "after",
+          "date": "2014-08-19",
+          "file": "aral-after.jpg",
+          "originalFile": "aral-after.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=58,43,61.5,46.5&WIDTH=1000&HEIGHT=1000&TIME=2014-08-19",
+          "sha256": "6e35a25a11f9f87317c46577638f65f8e32dc596ca135e970e251283d0326ac0",
+          "preparation": "Converted GIBS PNG to RGB JPEG quality 94. No geometric edits, invented overlays, or content replacement."
+        }
+      ]
+    },
+    "preparation": "Original shipped JPEGs decoded by Pillow; bilinear resize only when longest edge exceeds 768. Lake Mead is an independent NASA GIBS PNG pair. Browser Canvas decoding can differ slightly.",
+    "options": {
+      "threshold": 35,
+      "minArea": 100
+    },
+    "runs": [
+      {
+        "detectorMs": 140.80130000000003,
+        "auditMs": 108.30000000000001,
+        "qualityMs": 42.73200000000003,
+        "totalMs": 303.18979999999993
+      },
+      {
+        "detectorMs": 186.31650000000002,
+        "auditMs": 113.46310000000005,
+        "qualityMs": 38.687599999999975,
+        "totalMs": 346.44989999999996
+      },
+      {
+        "detectorMs": 174.28599999999983,
+        "auditMs": 85.29279999999994,
+        "qualityMs": 71.11389999999983,
+        "totalMs": 354.2252
+      }
+    ],
+    "result": {
+      "width": 768,
+      "height": 768,
+      "threshold": 35,
+      "minArea": 100,
+      "smoothingRadius": 1,
+      "regions": [
+        {
+          "id": 10,
+          "area": 100175,
+          "bbox": [
+            50,
+            45,
+            525,
+            536
+          ],
+          "centroid": [
+            340.6863488894435,
+            325.3606588470177
+          ],
+          "meanDifference": 82.95913151984028
+        },
+        {
+          "id": 12,
+          "area": 1809,
+          "bbox": [
+            477,
+            86,
+            597,
+            132
+          ],
+          "centroid": [
+            542.0022111663902,
+            101.18131564400221
+          ],
+          "meanDifference": 56.01326699834163
+        },
+        {
+          "id": 9,
+          "area": 1236,
+          "bbox": [
+            208,
+            28,
+            278,
+            103
+          ],
+          "centroid": [
+            243.26294498381878,
+            66.1504854368932
+          ],
+          "meanDifference": 58.34304207119741
+        },
+        {
+          "id": 22,
+          "area": 1134,
+          "bbox": [
+            220,
+            492,
+            325,
+            542
+          ],
+          "centroid": [
+            255.90652557319223,
+            521.2116402116402
+          ],
+          "meanDifference": 51.657848324514994
+        },
+        {
+          "id": 29,
+          "area": 1078,
+          "bbox": [
+            367,
+            619,
+            425,
+            672
+          ],
+          "centroid": [
+            398.79313543599255,
+            642.8896103896104
+          ],
+          "meanDifference": 50.62615955473098
+        },
+        {
+          "id": 4,
+          "area": 1036,
+          "bbox": [
+            603,
+            0,
+            732,
+            91
+          ],
+          "centroid": [
+            665.3841698841699,
+            59.214285714285715
+          ],
+          "meanDifference": 66.27413127413128
+        },
+        {
+          "id": 19,
+          "area": 793,
+          "bbox": [
+            535,
+            377,
+            589,
+            410
+          ],
+          "centroid": [
+            565.5649432534678,
+            393.9331651954603
+          ],
+          "meanDifference": 45.921815889029006
+        },
+        {
+          "id": 8,
+          "area": 750,
+          "bbox": [
+            493,
+            15,
+            623,
+            71
+          ],
+          "centroid": [
+            565.436,
+            33.30133333333333
+          ],
+          "meanDifference": 70.25866666666667
+        },
+        {
+          "id": 2,
+          "area": 634,
+          "bbox": [
+            257,
+            0,
+            304,
+            21
+          ],
+          "centroid": [
+            282.1056782334385,
+            9.634069400630915
+          ],
+          "meanDifference": 60.913249211356465
+        },
+        {
+          "id": 21,
+          "area": 372,
+          "bbox": [
+            98,
+            478,
+            172,
+            486
+          ],
+          "centroid": [
+            131.73924731182797,
+            482.05913978494624
+          ],
+          "meanDifference": 47.61827956989247
+        },
+        {
+          "id": 11,
+          "area": 356,
+          "bbox": [
+            0,
+            72,
+            25,
+            98
+          ],
+          "centroid": [
+            9.564606741573034,
+            84.37078651685393
+          ],
+          "meanDifference": 67.70505617977528
+        },
+        {
+          "id": 24,
+          "area": 319,
+          "bbox": [
+            224,
+            549,
+            252,
+            579
+          ],
+          "centroid": [
+            233.2884012539185,
+            561.0156739811912
+          ],
+          "meanDifference": 45.94670846394985
+        },
+        {
+          "id": 18,
+          "area": 298,
+          "bbox": [
+            47,
+            347,
+            72,
+            427
+          ],
+          "centroid": [
+            59.16107382550336,
+            395.40939597315435
+          ],
+          "meanDifference": 62.993288590604024
+        },
+        {
+          "id": 1,
+          "area": 287,
+          "bbox": [
+            106,
+            0,
+            133,
+            19
+          ],
+          "centroid": [
+            119.96515679442508,
+            8.445993031358885
+          ],
+          "meanDifference": 50.52264808362369
+        },
+        {
+          "id": 30,
+          "area": 279,
+          "bbox": [
+            428,
+            625,
+            449,
+            650
+          ],
+          "centroid": [
+            437.10035842293905,
+            637.1146953405018
+          ],
+          "meanDifference": 56.939068100358426
+        },
+        {
+          "id": 25,
+          "area": 235,
+          "bbox": [
+            718,
+            567,
+            738,
+            599
+          ],
+          "centroid": [
+            726.1106382978724,
+            584.2468085106383
+          ],
+          "meanDifference": 54.702127659574465
+        },
+        {
+          "id": 3,
+          "area": 226,
+          "bbox": [
+            433,
+            0,
+            481,
+            33
+          ],
+          "centroid": [
+            451.51769911504425,
+            19.079646017699115
+          ],
+          "meanDifference": 63.21238938053097
+        },
+        {
+          "id": 27,
+          "area": 207,
+          "bbox": [
+            693,
+            582,
+            717,
+            602
+          ],
+          "centroid": [
+            705.8550724637681,
+            592.0338164251208
+          ],
+          "meanDifference": 47.729468599033815
+        },
+        {
+          "id": 14,
+          "area": 193,
+          "bbox": [
+            669,
+            109,
+            697,
+            127
+          ],
+          "centroid": [
+            680.9896373056995,
+            117
+          ],
+          "meanDifference": 46.803108808290155
+        },
+        {
+          "id": 20,
+          "area": 188,
+          "bbox": [
+            529,
+            424,
+            544,
+            465
+          ],
+          "centroid": [
+            538.1329787234042,
+            442.90425531914894
+          ],
+          "meanDifference": 42.787234042553195
+        },
+        {
+          "id": 33,
+          "area": 184,
+          "bbox": [
+            433,
+            736,
+            449,
+            761
+          ],
+          "centroid": [
+            441.29891304347825,
+            750.1086956521739
+          ],
+          "meanDifference": 41.16847826086956
+        },
+        {
+          "id": 7,
+          "area": 176,
+          "bbox": [
+            657,
+            5,
+            712,
+            15
+          ],
+          "centroid": [
+            685.9715909090909,
+            8.948863636363637
+          ],
+          "meanDifference": 58.01136363636363
+        },
+        {
+          "id": 34,
+          "area": 170,
+          "bbox": [
+            506,
+            739,
+            527,
+            763
+          ],
+          "centroid": [
+            514.6588235294117,
+            751.5764705882353
+          ],
+          "meanDifference": 42.84705882352941
+        },
+        {
+          "id": 23,
+          "area": 165,
+          "bbox": [
+            304,
+            513,
+            326,
+            532
+          ],
+          "centroid": [
+            315.23030303030305,
+            523.5636363636364
+          ],
+          "meanDifference": 39.84848484848485
+        },
+        {
+          "id": 31,
+          "area": 158,
+          "bbox": [
+            260,
+            641,
+            276,
+            664
+          ],
+          "centroid": [
+            267.3544303797468,
+            651.1962025316456
+          ],
+          "meanDifference": 47.221518987341774
+        },
+        {
+          "id": 13,
+          "area": 146,
+          "bbox": [
+            603,
+            99,
+            631,
+            115
+          ],
+          "centroid": [
+            618.5342465753424,
+            105.67808219178082
+          ],
+          "meanDifference": 46.6986301369863
+        },
+        {
+          "id": 17,
+          "area": 134,
+          "bbox": [
+            754,
+            321,
+            768,
+            343
+          ],
+          "centroid": [
+            760.6194029850747,
+            331.8731343283582
+          ],
+          "meanDifference": 47.88059701492537
+        },
+        {
+          "id": 5,
+          "area": 126,
+          "bbox": [
+            41,
+            1,
+            57,
+            17
+          ],
+          "centroid": [
+            49.198412698412696,
+            8.65079365079365
+          ],
+          "meanDifference": 55.44444444444444
+        },
+        {
+          "id": 32,
+          "area": 125,
+          "bbox": [
+            98,
+            651,
+            121,
+            664
+          ],
+          "centroid": [
+            108.32,
+            657.536
+          ],
+          "meanDifference": 54.248
+        },
+        {
+          "id": 16,
+          "area": 113,
+          "bbox": [
+            518,
+            133,
+            544,
+            146
+          ],
+          "centroid": [
+            530.7256637168142,
+            139.76991150442478
+          ],
+          "meanDifference": 48.424778761061944
+        },
+        {
+          "id": 6,
+          "area": 109,
+          "bbox": [
+            75,
+            4,
+            92,
+            20
+          ],
+          "centroid": [
+            83.6697247706422,
+            12.220183486238533
+          ],
+          "meanDifference": 50.58715596330275
+        },
+        {
+          "id": 15,
+          "area": 109,
+          "bbox": [
+            605,
+            122,
+            635,
+            131
+          ],
+          "centroid": [
+            620.2110091743119,
+            125.53211009174312
+          ],
+          "meanDifference": 42.30275229357798
+        },
+        {
+          "id": 28,
+          "area": 108,
+          "bbox": [
+            736,
+            595,
+            756,
+            607
+          ],
+          "centroid": [
+            745.7777777777778,
+            600.75
+          ],
+          "meanDifference": 45.93518518518518
+        },
+        {
+          "id": 26,
+          "area": 105,
+          "bbox": [
+            352,
+            572,
+            376,
+            584
+          ],
+          "centroid": [
+            361.77142857142854,
+            578.9238095238095
+          ],
+          "meanDifference": 41.75238095238095
+        }
+      ],
+      "validPixels": 589824,
+      "changedPixels": 113533,
+      "changedPercent": 19.24862331814236,
+      "processingMs": 174.28599999999983,
+      "findings": {
+        "version": 1,
+        "summary": "Analysis identified 34 visual-change regions, covering 19.25% of valid processing pixels. 47.4% of detected change pixels lie in the center third of the north-up scene. The largest region contains 100,175 changed pixels. These are preliminary visual findings requiring evidence inspection. Sensitive to threshold selection.",
+        "totalRegions": 34,
+        "changedPixels": 113533,
+        "validPixels": 589824,
+        "changedPercent": 19.24862331814236,
+        "grid": {
+          "width": 768,
+          "height": 768
+        },
+        "sizes": {
+          "smallest": 105,
+          "median": 216.5,
+          "largest": 100175
+        },
+        "distribution": [
+          {
+            "position": "upper-left",
+            "pixels": 8838
+          },
+          {
+            "position": "upper-center",
+            "pixels": 25884
+          },
+          {
+            "position": "upper-right",
+            "pixels": 3923
+          },
+          {
+            "position": "middle-left",
+            "pixels": 14114
+          },
+          {
+            "position": "center",
+            "pixels": 53830
+          },
+          {
+            "position": "middle-right",
+            "pixels": 1606
+          },
+          {
+            "position": "lower-left",
+            "pixels": 850
+          },
+          {
+            "position": "lower-center",
+            "pixels": 3822
+          },
+          {
+            "position": "lower-right",
+            "pixels": 666
+          }
+        ],
+        "occupiedCells": 9,
+        "largest": [
+          {
+            "id": 10,
+            "area": 100175,
+            "centroid": [
+              340.6863488894435,
+              325.3606588470177
+            ],
+            "bbox": [
+              50,
+              45,
+              525,
+              536
+            ],
+            "location": {
+              "lat": 45.014957934941975,
+              "lng": 59.55488570457429
+            }
+          },
+          {
+            "id": 12,
+            "area": 1809,
+            "centroid": [
+              542.0022111663902,
+              101.18131564400221
+            ],
+            "bbox": [
+              477,
+              86,
+              597,
+              132
+            ],
+            "location": {
+              "lat": 46.03660858755988,
+              "lng": 60.47234080609683
+            }
+          },
+          {
+            "id": 9,
+            "area": 1236,
+            "centroid": [
+              243.26294498381878,
+              66.1504854368932
+            ],
+            "bbox": [
+              208,
+              28,
+              278,
+              103
+            ],
+            "location": {
+              "lat": 46.19625429813916,
+              "lng": 59.11089883781688
+            }
+          },
+          {
+            "id": 22,
+            "area": 1134,
+            "centroid": [
+              255.90652557319223,
+              521.2116402116402
+            ],
+            "bbox": [
+              220,
+              492,
+              325,
+              542
+            ],
+            "location": {
+              "lat": 44.122407889660494,
+              "lng": 59.16851932227366
+            }
+          },
+          {
+            "id": 29,
+            "area": 1078,
+            "centroid": [
+              398.79313543599255,
+              642.8896103896104
+            ],
+            "bbox": [
+              367,
+              619,
+              425,
+              672
+            ],
+            "location": {
+              "lat": 43.567885890151516,
+              "lng": 59.81969527867965
+            }
+          }
+        ],
+        "geographic": true,
+        "parameters": {
+          "threshold": 35,
+          "minArea": 100,
+          "smoothing": "3 × 3 mean filter",
+          "connectivity": 4
+        },
+        "detectorMs": 174.28599999999983,
+        "limitations": [
+          "RGB differences describe appearance, not cause or operational significance. No automatic object or terrain classification is applied.",
+          "Lighting, shadows, seasonal variation, clouds and residual misalignment may affect results; clouds and shadows are not automatically detected.",
+          "Region sizes refer to the processing grid, not geographic area. Small or low-contrast changes may be missed.",
+          "Coordinates use supplied north-up geographic bounds; geolocation is not independently verified.",
+          "Some clouds near the upper left in the baseline.",
+          "Seasonal surface color, residual registration, atmospheric differences, and changing water color can create candidate differences.",
+          "MODIS browse imagery is regional-scale; not suitable for claims about individual roads or buildings."
+        ]
+      },
+      "reliability": {
+        "version": 1,
+        "status": "Sensitive to threshold selection",
+        "reason": "99,611 pixels persist across all tested thresholds; 18,958 appear only at the lowest threshold (highest tested sensitivity).",
+        "thresholds": [
+          27,
+          35,
+          43
+        ],
+        "runs": [
+          {
+            "threshold": 27,
+            "regions": 48,
+            "changedPixels": 132491,
+            "changedPercent": 22.46280246310764
+          },
+          {
+            "threshold": 35,
+            "regions": 34,
+            "changedPixels": 113533,
+            "changedPercent": 19.24862331814236
+          },
+          {
+            "threshold": 43,
+            "regions": 25,
+            "changedPixels": 99611,
+            "changedPercent": 16.888258192274304
+          }
+        ],
+        "persistentPixels": 99611,
+        "unionPixels": 132491,
+        "primaryPersistentPixels": 99611,
+        "lowThresholdOnlyPixels": 18958,
+        "changedPercentMin": 16.888258192274304,
+        "changedPercentMax": 22.46280246310764,
+        "rangePercentagePoints": 5.574544270833336,
+        "regionPersistence": {
+          "1": {
+            "persistentPixels": 212,
+            "totalPixels": 287,
+            "label": "Sensitive to threshold selection"
+          },
+          "2": {
+            "persistentPixels": 427,
+            "totalPixels": 634,
+            "label": "Sensitive to threshold selection"
+          },
+          "3": {
+            "persistentPixels": 183,
+            "totalPixels": 226,
+            "label": "Stable across tested thresholds"
+          },
+          "4": {
+            "persistentPixels": 900,
+            "totalPixels": 1036,
+            "label": "Stable across tested thresholds"
+          },
+          "5": {
+            "persistentPixels": 0,
+            "totalPixels": 126,
+            "label": "Sensitive to threshold selection"
+          },
+          "6": {
+            "persistentPixels": 0,
+            "totalPixels": 109,
+            "label": "Sensitive to threshold selection"
+          },
+          "7": {
+            "persistentPixels": 129,
+            "totalPixels": 176,
+            "label": "Sensitive to threshold selection"
+          },
+          "8": {
+            "persistentPixels": 604,
+            "totalPixels": 750,
+            "label": "Stable across tested thresholds"
+          },
+          "9": {
+            "persistentPixels": 985,
+            "totalPixels": 1236,
+            "label": "Sensitive to threshold selection"
+          },
+          "10": {
+            "persistentPixels": 91537,
+            "totalPixels": 100175,
+            "label": "Stable across tested thresholds"
+          },
+          "11": {
+            "persistentPixels": 301,
+            "totalPixels": 356,
+            "label": "Stable across tested thresholds"
+          },
+          "12": {
+            "persistentPixels": 1337,
+            "totalPixels": 1809,
+            "label": "Sensitive to threshold selection"
+          },
+          "13": {
+            "persistentPixels": 0,
+            "totalPixels": 146,
+            "label": "Sensitive to threshold selection"
+          },
+          "14": {
+            "persistentPixels": 0,
+            "totalPixels": 193,
+            "label": "Sensitive to threshold selection"
+          },
+          "15": {
+            "persistentPixels": 0,
+            "totalPixels": 109,
+            "label": "Sensitive to threshold selection"
+          },
+          "16": {
+            "persistentPixels": 0,
+            "totalPixels": 113,
+            "label": "Sensitive to threshold selection"
+          },
+          "17": {
+            "persistentPixels": 0,
+            "totalPixels": 134,
+            "label": "Sensitive to threshold selection"
+          },
+          "18": {
+            "persistentPixels": 243,
+            "totalPixels": 298,
+            "label": "Stable across tested thresholds"
+          },
+          "19": {
+            "persistentPixels": 382,
+            "totalPixels": 793,
+            "label": "Sensitive to threshold selection"
+          },
+          "20": {
+            "persistentPixels": 0,
+            "totalPixels": 188,
+            "label": "Sensitive to threshold selection"
+          },
+          "21": {
+            "persistentPixels": 259,
+            "totalPixels": 372,
+            "label": "Sensitive to threshold selection"
+          },
+          "22": {
+            "persistentPixels": 829,
+            "totalPixels": 1134,
+            "label": "Sensitive to threshold selection"
+          },
+          "23": {
+            "persistentPixels": 0,
+            "totalPixels": 165,
+            "label": "Sensitive to threshold selection"
+          },
+          "24": {
+            "persistentPixels": 148,
+            "totalPixels": 319,
+            "label": "Sensitive to threshold selection"
+          },
+          "25": {
+            "persistentPixels": 173,
+            "totalPixels": 235,
+            "label": "Sensitive to threshold selection"
+          },
+          "26": {
+            "persistentPixels": 0,
+            "totalPixels": 105,
+            "label": "Sensitive to threshold selection"
+          },
+          "27": {
+            "persistentPixels": 124,
+            "totalPixels": 207,
+            "label": "Sensitive to threshold selection"
+          },
+          "28": {
+            "persistentPixels": 0,
+            "totalPixels": 108,
+            "label": "Sensitive to threshold selection"
+          },
+          "29": {
+            "persistentPixels": 584,
+            "totalPixels": 1078,
+            "label": "Sensitive to threshold selection"
+          },
+          "30": {
+            "persistentPixels": 152,
+            "totalPixels": 279,
+            "label": "Sensitive to threshold selection"
+          },
+          "31": {
+            "persistentPixels": 102,
+            "totalPixels": 158,
+            "label": "Sensitive to threshold selection"
+          },
+          "32": {
+            "persistentPixels": 0,
+            "totalPixels": 125,
+            "label": "Sensitive to threshold selection"
+          },
+          "33": {
+            "persistentPixels": 0,
+            "totalPixels": 184,
+            "label": "Sensitive to threshold selection"
+          },
+          "34": {
+            "persistentPixels": 0,
+            "totalPixels": 170,
+            "label": "Sensitive to threshold selection"
+          }
+        },
+        "method": "Pixel-mask intersection across three thresholds, after identical minimum-area filtering. The stable label requires intersection/union ≥ 0.80 (heuristic). Per-region labels require ≥ 80% of that region's pixels to persist. Neither ratio is confidence or accuracy. Region identity is not matched across runs.",
+        "step": 8,
+        "auditMs": 85.29279999999994
+      },
+      "quality": {
+        "version": 1,
+        "dimensions": {
+          "width": 768,
+          "height": 768
+        },
+        "validFraction": 1,
+        "brightness": {
+          "meanBefore": 136.5135706150193,
+          "meanAfter": 142.5269306385922,
+          "delta": 6.013360023572915,
+          "warningThreshold": 20
+        },
+        "alignment": {
+          "status": "No small-shift cue detected",
+          "shiftX": 0,
+          "shiftY": 0,
+          "baselineResidual": 18.715922669778692,
+          "bestResidual": 18.715922669778692,
+          "relativeReduction": 0,
+          "samples": 4096,
+          "meanTexture": 9.195795771665871,
+          "searchRadius": 4
+        },
+        "geographic": true,
+        "warnings": [],
+        "limitations": [
+          "Quality screening is heuristic and not a validated image-quality or registration score.",
+          "The shift screen tests only integer translations within ±4 processing pixels; rotation, scale, subpixel displacement, perspective, and local distortions remain unchecked.",
+          "No automatic cloud, shadow or atmospheric detection. No radiometric normalization or geometric correction is applied."
+        ],
+        "qualityMs": 71.11389999999983
+      },
+      "timing": {
+        "detectorMs": 174.28599999999983,
+        "auditMs": 85.29279999999994,
+        "qualityMs": 71.11389999999983,
+        "totalMs": 354.2252
+      }
+    },
+    "identicalImageChangedPixels": 0,
+    "baselinePreserved": true
+  },
+  {
+    "scene": {
+      "id": "pakistan",
+      "title": "Indus floodplain change",
+      "location": "Sindh, Pakistan",
+      "dates": [
+        "2022-08-04",
+        "2022-08-28"
+      ],
+      "bbox": [
+        67.55,
+        26.9,
+        68.2,
+        27.55
+      ],
+      "layer": "VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1",
+      "sensor": "NOAA-20 / VIIRS",
+      "color": "False color (M11-I2-I1)",
+      "article": "https://science.nasa.gov/earth/earth-observatory/devastating-floods-in-pakistan-150279/",
+      "description": "Real satellite comparison during the August 2022 Pakistan floods. Water-related visual changes are evident around the Indus floodplain. This is contextual source information, not a classification produced by TerraLens.",
+      "caveats": [
+        "Both dates contain clouds and cloud shadows; these must not be interpreted automatically as terrain change.",
+        "False-color rendered imagery, not raw spectral reflectance.",
+        "VIIRS regional-scale visualization cannot establish road passability or individual building damage."
+      ],
+      "width": 325,
+      "height": 325,
+      "synthetic": false,
+      "crs": "EPSG:4326",
+      "bboxOrder": "west,south,east,north",
+      "georeferencing": "Bounds derived exactly from pixel crop of the original EPSG:4326 WMS raster, using its declared bounds and dimensions.",
+      "alignment": "Both dates rendered by GIBS to identical projection, bounds, and dimensions; visually checked stable terrain. No independent subpixel registration validation.",
+      "attribution": "NASA GIBS / ESDIS, NOAA-20 / VIIRS.",
+      "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "gibsDocumentation": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+      "files": [
+        {
+          "role": "before",
+          "date": "2022-08-04",
+          "file": "pakistan-focused-before.jpg",
+          "originalFile": "pakistan-before.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-04",
+          "sha256": "ff3297a7e9c7c73457d2c0fa5e759d54348a8c05d1b2389e08bcdf6f6aae32ed",
+          "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+        },
+        {
+          "role": "after",
+          "date": "2022-08-28",
+          "file": "pakistan-focused-after.jpg",
+          "originalFile": "pakistan-after.png",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=VIIRS_NOAA20_CorrectedReflectance_BandsM11-I2-I1&STYLES=&FORMAT=image/png&TRANSPARENT=FALSE&SRS=EPSG:4326&BBOX=67,26.5,69,28.5&WIDTH=1000&HEIGHT=1000&TIME=2022-08-28",
+          "sha256": "ad65f72a2bd5cae170bba33dc19d3409f92f03cbaf901f2c7bb803b64c07286d",
+          "preparation": "Exact integer pixel crop [275, 475, 600, 800] from original 1000x1000 PNG. Converted to RGB JPEG quality 94. No rescaling, overlays, or generative edits."
+        }
+      ],
+      "cropFromOriginal": [
+        275,
+        475,
+        600,
+        800
+      ]
+    },
+    "preparation": "Original shipped JPEGs decoded by Pillow; bilinear resize only when longest edge exceeds 768. Lake Mead is an independent NASA GIBS PNG pair. Browser Canvas decoding can differ slightly.",
+    "options": {
+      "threshold": 45,
+      "minArea": 35
+    },
+    "runs": [
+      {
+        "detectorMs": 23.24860000000035,
+        "auditMs": 61.444099999999935,
+        "qualityMs": 20.194600000000037,
+        "totalMs": 113.79600000000005
+      },
+      {
+        "detectorMs": 23.12369999999987,
+        "auditMs": 19.382299999999987,
+        "qualityMs": 16.661200000000008,
+        "totalMs": 61.744500000000016
+      },
+      {
+        "detectorMs": 30.188300000000027,
+        "auditMs": 34.47580000000016,
+        "qualityMs": 13.153999999999996,
+        "totalMs": 84.65830000000005
+      }
+    ],
+    "result": {
+      "width": 325,
+      "height": 325,
+      "threshold": 45,
+      "minArea": 35,
+      "smoothingRadius": 1,
+      "regions": [
+        {
+          "id": 2,
+          "area": 27613,
+          "bbox": [
+            0,
+            0,
+            219,
+            325
+          ],
+          "centroid": [
+            77.27497917647484,
+            137.40115163147792
+          ],
+          "meanDifference": 74.80281027052476
+        },
+        {
+          "id": 6,
+          "area": 22476,
+          "bbox": [
+            145,
+            3,
+            325,
+            325
+          ],
+          "centroid": [
+            256.65331909592453,
+            207.85130806193274
+          ],
+          "meanDifference": 63.61630183306638
+        },
+        {
+          "id": 25,
+          "area": 2878,
+          "bbox": [
+            41,
+            270,
+            154,
+            325
+          ],
+          "centroid": [
+            94.24426685198054,
+            299.13968033356497
+          ],
+          "meanDifference": 57.073662265462126
+        },
+        {
+          "id": 11,
+          "area": 1229,
+          "bbox": [
+            296,
+            103,
+            325,
+            181
+          ],
+          "centroid": [
+            314.15541090317333,
+            136.96013018714402
+          ],
+          "meanDifference": 71.53702196908056
+        },
+        {
+          "id": 4,
+          "area": 1127,
+          "bbox": [
+            233,
+            0,
+            283,
+            50
+          ],
+          "centroid": [
+            254.20230700976043,
+            18.50665483584738
+          ],
+          "meanDifference": 55.817213842058564
+        },
+        {
+          "id": 14,
+          "area": 1121,
+          "bbox": [
+            116,
+            127,
+            208,
+            161
+          ],
+          "centroid": [
+            154.25869759143623,
+            141.27921498661908
+          ],
+          "meanDifference": 64.45851917930419
+        },
+        {
+          "id": 3,
+          "area": 742,
+          "bbox": [
+            177,
+            0,
+            224,
+            31
+          ],
+          "centroid": [
+            197.3490566037736,
+            13.475741239892184
+          ],
+          "meanDifference": 59.33288409703504
+        },
+        {
+          "id": 15,
+          "area": 124,
+          "bbox": [
+            185,
+            156,
+            205,
+            171
+          ],
+          "centroid": [
+            194.1048387096774,
+            162.53225806451613
+          ],
+          "meanDifference": 53.16129032258065
+        },
+        {
+          "id": 1,
+          "area": 116,
+          "bbox": [
+            31,
+            0,
+            46,
+            12
+          ],
+          "centroid": [
+            37.73275862068966,
+            4.310344827586207
+          ],
+          "meanDifference": 54.0948275862069
+        },
+        {
+          "id": 12,
+          "area": 112,
+          "bbox": [
+            207,
+            110,
+            225,
+            120
+          ],
+          "centroid": [
+            213.88392857142858,
+            113.94642857142857
+          ],
+          "meanDifference": 58.892857142857146
+        },
+        {
+          "id": 7,
+          "area": 104,
+          "bbox": [
+            208,
+            18,
+            223,
+            29
+          ],
+          "centroid": [
+            214.95192307692307,
+            22.971153846153847
+          ],
+          "meanDifference": 50.11538461538461
+        },
+        {
+          "id": 9,
+          "area": 90,
+          "bbox": [
+            251,
+            61,
+            271,
+            71
+          ],
+          "centroid": [
+            261.15555555555557,
+            64.62222222222222
+          ],
+          "meanDifference": 54.13333333333333
+        },
+        {
+          "id": 8,
+          "area": 78,
+          "bbox": [
+            220,
+            58,
+            234,
+            66
+          ],
+          "centroid": [
+            226.14102564102564,
+            61.62820512820513
+          ],
+          "meanDifference": 65.84615384615384
+        },
+        {
+          "id": 16,
+          "area": 64,
+          "bbox": [
+            109,
+            188,
+            118,
+            201
+          ],
+          "centroid": [
+            113.671875,
+            192.59375
+          ],
+          "meanDifference": 53.0625
+        },
+        {
+          "id": 23,
+          "area": 63,
+          "bbox": [
+            232,
+            252,
+            243,
+            264
+          ],
+          "centroid": [
+            235.79365079365078,
+            258.12698412698415
+          ],
+          "meanDifference": 47.74603174603175
+        },
+        {
+          "id": 5,
+          "area": 57,
+          "bbox": [
+            282,
+            0,
+            294,
+            9
+          ],
+          "centroid": [
+            287.2105263157895,
+            3.9298245614035086
+          ],
+          "meanDifference": 51.12280701754386
+        },
+        {
+          "id": 13,
+          "area": 55,
+          "bbox": [
+            160,
+            121,
+            171,
+            128
+          ],
+          "centroid": [
+            165.2,
+            124.32727272727273
+          ],
+          "meanDifference": 66.23636363636363
+        },
+        {
+          "id": 10,
+          "area": 51,
+          "bbox": [
+            254,
+            80,
+            263,
+            88
+          ],
+          "centroid": [
+            258,
+            83.56862745098039
+          ],
+          "meanDifference": 55.1764705882353
+        },
+        {
+          "id": 19,
+          "area": 50,
+          "bbox": [
+            162,
+            210,
+            173,
+            220
+          ],
+          "centroid": [
+            165.9,
+            213.92
+          ],
+          "meanDifference": 49.34
+        },
+        {
+          "id": 26,
+          "area": 49,
+          "bbox": [
+            76,
+            278,
+            84,
+            288
+          ],
+          "centroid": [
+            79.55102040816327,
+            281.7959183673469
+          ],
+          "meanDifference": 49.48979591836735
+        },
+        {
+          "id": 18,
+          "area": 46,
+          "bbox": [
+            315,
+            205,
+            325,
+            211
+          ],
+          "centroid": [
+            320.19565217391306,
+            207.91304347826087
+          ],
+          "meanDifference": 60.41304347826087
+        },
+        {
+          "id": 20,
+          "area": 46,
+          "bbox": [
+            312,
+            216,
+            325,
+            223
+          ],
+          "centroid": [
+            318.60869565217394,
+            218.45652173913044
+          ],
+          "meanDifference": 52.19565217391305
+        },
+        {
+          "id": 17,
+          "area": 40,
+          "bbox": [
+            167,
+            197,
+            174,
+            205
+          ],
+          "centroid": [
+            170.425,
+            200.575
+          ],
+          "meanDifference": 50
+        },
+        {
+          "id": 21,
+          "area": 40,
+          "bbox": [
+            307,
+            220,
+            316,
+            226
+          ],
+          "centroid": [
+            310.525,
+            222.875
+          ],
+          "meanDifference": 55.1
+        },
+        {
+          "id": 24,
+          "area": 40,
+          "bbox": [
+            153,
+            259,
+            162,
+            268
+          ],
+          "centroid": [
+            156.65,
+            262.475
+          ],
+          "meanDifference": 52.975
+        },
+        {
+          "id": 22,
+          "area": 35,
+          "bbox": [
+            150,
+            224,
+            161,
+            231
+          ],
+          "centroid": [
+            155.71428571428572,
+            226.97142857142856
+          ],
+          "meanDifference": 49.2
+        }
+      ],
+      "validPixels": 105625,
+      "changedPixels": 58446,
+      "changedPercent": 55.33349112426036,
+      "processingMs": 30.188300000000027,
+      "findings": {
+        "version": 1,
+        "summary": "Analysis identified 26 visual-change regions, covering 55.33% of valid processing pixels. Detected change pixels are distributed across 9 of 9 image-grid sectors. The largest region contains 27,613 changed pixels. These are preliminary visual findings requiring evidence inspection. Sensitive to threshold selection.",
+        "totalRegions": 26,
+        "changedPixels": 58446,
+        "validPixels": 105625,
+        "changedPercent": 55.33349112426036,
+        "grid": {
+          "width": 325,
+          "height": 325
+        },
+        "sizes": {
+          "smallest": 35,
+          "median": 71,
+          "largest": 27613
+        },
+        "distribution": [
+          {
+            "position": "upper-left",
+            "pixels": 6480
+          },
+          {
+            "position": "upper-center",
+            "pixels": 6766
+          },
+          {
+            "position": "upper-right",
+            "pixels": 5152
+          },
+          {
+            "position": "middle-left",
+            "pixels": 8026
+          },
+          {
+            "position": "center",
+            "pixels": 3371
+          },
+          {
+            "position": "middle-right",
+            "pixels": 7221
+          },
+          {
+            "position": "lower-left",
+            "pixels": 7719
+          },
+          {
+            "position": "lower-center",
+            "pixels": 5549
+          },
+          {
+            "position": "lower-right",
+            "pixels": 8162
+          }
+        ],
+        "occupiedCells": 9,
+        "largest": [
+          {
+            "id": 2,
+            "area": 27613,
+            "centroid": [
+              77.27497917647484,
+              137.40115163147792
+            ],
+            "bbox": [
+              0,
+              0,
+              219,
+              325
+            ],
+            "location": {
+              "lat": 27.274197696737044,
+              "lng": 67.70554995835295
+            }
+          },
+          {
+            "id": 6,
+            "area": 22476,
+            "centroid": [
+              256.65331909592453,
+              207.85130806193274
+            ],
+            "bbox": [
+              145,
+              3,
+              325,
+              325
+            ],
+            "location": {
+              "lat": 27.133297383876133,
+              "lng": 68.06430663819185
+            }
+          },
+          {
+            "id": 25,
+            "area": 2878,
+            "centroid": [
+              94.24426685198054,
+              299.13968033356497
+            ],
+            "bbox": [
+              41,
+              270,
+              154,
+              325
+            ],
+            "location": {
+              "lat": 26.950720639332868,
+              "lng": 67.73948853370396
+            }
+          },
+          {
+            "id": 11,
+            "area": 1229,
+            "centroid": [
+              314.15541090317333,
+              136.96013018714402
+            ],
+            "bbox": [
+              296,
+              103,
+              325,
+              181
+            ],
+            "location": {
+              "lat": 27.275079739625713,
+              "lng": 68.17931082180635
+            }
+          },
+          {
+            "id": 4,
+            "area": 1127,
+            "centroid": [
+              254.20230700976043,
+              18.50665483584738
+            ],
+            "bbox": [
+              233,
+              0,
+              283,
+              50
+            ],
+            "location": {
+              "lat": 27.511986690328307,
+              "lng": 68.05940461401953
+            }
+          }
+        ],
+        "geographic": true,
+        "parameters": {
+          "threshold": 45,
+          "minArea": 35,
+          "smoothing": "3 × 3 mean filter",
+          "connectivity": 4
+        },
+        "detectorMs": 30.188300000000027,
+        "limitations": [
+          "RGB differences describe appearance, not cause or operational significance. No automatic object or terrain classification is applied.",
+          "Lighting, shadows, seasonal variation, clouds and residual misalignment may affect results; clouds and shadows are not automatically detected.",
+          "Region sizes refer to the processing grid, not geographic area. Small or low-contrast changes may be missed.",
+          "Coordinates use supplied north-up geographic bounds; geolocation is not independently verified.",
+          "Both dates contain clouds and cloud shadows; these must not be interpreted automatically as terrain change.",
+          "False-color rendered imagery, not raw spectral reflectance.",
+          "VIIRS regional-scale visualization cannot establish road passability or individual building damage."
+        ]
+      },
+      "reliability": {
+        "version": 1,
+        "status": "Sensitive to threshold selection",
+        "reason": "45,673 pixels persist across all tested thresholds; 12,203 appear only at the lowest threshold (highest tested sensitivity).",
+        "thresholds": [
+          37,
+          45,
+          53
+        ],
+        "runs": [
+          {
+            "threshold": 37,
+            "regions": 17,
+            "changedPixels": 70649,
+            "changedPercent": 66.88662721893492
+          },
+          {
+            "threshold": 45,
+            "regions": 26,
+            "changedPixels": 58446,
+            "changedPercent": 55.33349112426036
+          },
+          {
+            "threshold": 53,
+            "regions": 30,
+            "changedPixels": 45673,
+            "changedPercent": 43.2407100591716
+          }
+        ],
+        "persistentPixels": 45673,
+        "unionPixels": 70649,
+        "primaryPersistentPixels": 45673,
+        "lowThresholdOnlyPixels": 12203,
+        "changedPercentMin": 43.2407100591716,
+        "changedPercentMax": 66.88662721893492,
+        "rangePercentagePoints": 23.64591715976332,
+        "regionPersistence": {
+          "1": {
+            "persistentPixels": 0,
+            "totalPixels": 116,
+            "label": "Sensitive to threshold selection"
+          },
+          "2": {
+            "persistentPixels": 23860,
+            "totalPixels": 27613,
+            "label": "Stable across tested thresholds"
+          },
+          "3": {
+            "persistentPixels": 524,
+            "totalPixels": 742,
+            "label": "Sensitive to threshold selection"
+          },
+          "4": {
+            "persistentPixels": 563,
+            "totalPixels": 1127,
+            "label": "Sensitive to threshold selection"
+          },
+          "5": {
+            "persistentPixels": 0,
+            "totalPixels": 57,
+            "label": "Sensitive to threshold selection"
+          },
+          "6": {
+            "persistentPixels": 16970,
+            "totalPixels": 22476,
+            "label": "Sensitive to threshold selection"
+          },
+          "7": {
+            "persistentPixels": 0,
+            "totalPixels": 104,
+            "label": "Sensitive to threshold selection"
+          },
+          "8": {
+            "persistentPixels": 60,
+            "totalPixels": 78,
+            "label": "Sensitive to threshold selection"
+          },
+          "9": {
+            "persistentPixels": 49,
+            "totalPixels": 90,
+            "label": "Sensitive to threshold selection"
+          },
+          "10": {
+            "persistentPixels": 0,
+            "totalPixels": 51,
+            "label": "Sensitive to threshold selection"
+          },
+          "11": {
+            "persistentPixels": 1093,
+            "totalPixels": 1229,
+            "label": "Stable across tested thresholds"
+          },
+          "12": {
+            "persistentPixels": 78,
+            "totalPixels": 112,
+            "label": "Sensitive to threshold selection"
+          },
+          "13": {
+            "persistentPixels": 43,
+            "totalPixels": 55,
+            "label": "Sensitive to threshold selection"
+          },
+          "14": {
+            "persistentPixels": 705,
+            "totalPixels": 1121,
+            "label": "Sensitive to threshold selection"
+          },
+          "15": {
+            "persistentPixels": 36,
+            "totalPixels": 124,
+            "label": "Sensitive to threshold selection"
+          },
+          "16": {
+            "persistentPixels": 0,
+            "totalPixels": 64,
+            "label": "Sensitive to threshold selection"
+          },
+          "17": {
+            "persistentPixels": 0,
+            "totalPixels": 40,
+            "label": "Sensitive to threshold selection"
+          },
+          "18": {
+            "persistentPixels": 0,
+            "totalPixels": 46,
+            "label": "Sensitive to threshold selection"
+          },
+          "19": {
+            "persistentPixels": 0,
+            "totalPixels": 50,
+            "label": "Sensitive to threshold selection"
+          },
+          "20": {
+            "persistentPixels": 0,
+            "totalPixels": 46,
+            "label": "Sensitive to threshold selection"
+          },
+          "21": {
+            "persistentPixels": 0,
+            "totalPixels": 40,
+            "label": "Sensitive to threshold selection"
+          },
+          "22": {
+            "persistentPixels": 0,
+            "totalPixels": 35,
+            "label": "Sensitive to threshold selection"
+          },
+          "23": {
+            "persistentPixels": 0,
+            "totalPixels": 63,
+            "label": "Sensitive to threshold selection"
+          },
+          "24": {
+            "persistentPixels": 0,
+            "totalPixels": 40,
+            "label": "Sensitive to threshold selection"
+          },
+          "25": {
+            "persistentPixels": 1692,
+            "totalPixels": 2878,
+            "label": "Sensitive to threshold selection"
+          },
+          "26": {
+            "persistentPixels": 0,
+            "totalPixels": 49,
+            "label": "Sensitive to threshold selection"
+          }
+        },
+        "method": "Pixel-mask intersection across three thresholds, after identical minimum-area filtering. The stable label requires intersection/union ≥ 0.80 (heuristic). Per-region labels require ≥ 80% of that region's pixels to persist. Neither ratio is confidence or accuracy. Region identity is not matched across runs.",
+        "step": 8,
+        "auditMs": 34.47580000000016
+      },
+      "quality": {
+        "version": 1,
+        "dimensions": {
+          "width": 325,
+          "height": 325
+        },
+        "validFraction": 1,
+        "brightness": {
+          "meanBefore": 127.88852732762444,
+          "meanAfter": 71.0951631561821,
+          "delta": -56.79336417144235,
+          "warningThreshold": 20
+        },
+        "alignment": {
+          "status": "No small-shift cue detected",
+          "shiftX": -1,
+          "shiftY": 1,
+          "baselineResidual": 23.95619771225926,
+          "bestResidual": 23.85010221834478,
+          "relativeReduction": 0.004428728431314781,
+          "samples": 2809,
+          "meanTexture": 12.104431241294504,
+          "searchRadius": 4
+        },
+        "geographic": true,
+        "warnings": [
+          {
+            "code": "brightness-difference",
+            "message": "Mean luminance differs by -56.8 on a 0–255 scale (before 127.9, after 71.1). Broad appearance or real surface changes can influence RGB differences. No brightness correction was applied."
+          },
+          {
+            "code": "widespread-change",
+            "message": "55.33% of valid processing pixels are marked changed. Broad real changes, lighting, rendering differences or misalignment may dominate; inspect the source images before interpretation."
+          }
+        ],
+        "limitations": [
+          "Quality screening is heuristic and not a validated image-quality or registration score.",
+          "The shift screen tests only integer translations within ±4 processing pixels; rotation, scale, subpixel displacement, perspective, and local distortions remain unchecked.",
+          "No automatic cloud, shadow or atmospheric detection. No radiometric normalization or geometric correction is applied."
+        ],
+        "qualityMs": 13.153999999999996
+      },
+      "timing": {
+        "detectorMs": 30.188300000000027,
+        "auditMs": 34.47580000000016,
+        "qualityMs": 13.153999999999996,
+        "totalMs": 84.65830000000005
+      }
+    },
+    "identicalImageChangedPixels": 0,
+    "baselinePreserved": true
+  },
+  {
+    "scene": {
+      "id": "lake-mead-holdout",
+      "title": "Lake Mead independent comparison",
+      "location": "Lake Mead region, United States",
+      "dates": [
+        "2010-07-01",
+        "2022-07-01"
+      ],
+      "bbox": [
+        -115.1,
+        35.9,
+        -114.4,
+        36.6
+      ],
+      "sensor": "Terra / MODIS",
+      "color": "Natural color",
+      "attribution": "NASA GIBS / ESDIS, Terra / MODIS",
+      "alignment": "Identical requested EPSG:4326 bounds and dimensions. No independent registration verification.",
+      "description": "Additional real image pair used only for validation after implementation; not used to tune threshold settings.",
+      "caveats": [
+        "Public browse imagery; seasonal and atmospheric variations can affect visual differences.",
+        "This is not labeled ground truth for accuracy measurement."
+      ],
+      "files": [
+        {
+          "file": "lake-mead-2010-07-01.png",
+          "date": "2010-07-01",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image%2Fpng&TRANSPARENT=FALSE&SRS=EPSG%3A4326&BBOX=-115.1%2C35.9%2C-114.4%2C36.6&WIDTH=512&HEIGHT=512&TIME=2010-07-01",
+          "sha256": "c18e0403a6f074a84ee4a7514f9319c3c862926dd06fa5410257d2e8c7a39407",
+          "bytes": 159772
+        },
+        {
+          "file": "lake-mead-2022-07-01.png",
+          "date": "2022-07-01",
+          "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image%2Fpng&TRANSPARENT=FALSE&SRS=EPSG%3A4326&BBOX=-115.1%2C35.9%2C-114.4%2C36.6&WIDTH=512&HEIGHT=512&TIME=2022-07-01",
+          "sha256": "e73cfe44835075e9f534c7acf39052a0168bc2dc430becbbc067cf3872fc2f1c",
+          "bytes": 234526
+        }
+      ],
+      "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy"
+    },
+    "preparation": "Original shipped JPEGs decoded by Pillow; bilinear resize only when longest edge exceeds 768. Lake Mead is an independent NASA GIBS PNG pair. Browser Canvas decoding can differ slightly.",
+    "options": {
+      "threshold": 35,
+      "minArea": 100
+    },
+    "runs": [
+      {
+        "detectorMs": 61.07159999999976,
+        "auditMs": 28.42639999999983,
+        "qualityMs": 18.257100000000264,
+        "totalMs": 109.8417999999997
+      },
+      {
+        "detectorMs": 56.05470000000014,
+        "auditMs": 28.20450000000028,
+        "qualityMs": 17.02489999999989,
+        "totalMs": 103.24980000000005
+      },
+      {
+        "detectorMs": 51.865999999999985,
+        "auditMs": 25.69230000000016,
+        "qualityMs": 16.967999999999847,
+        "totalMs": 96.59400000000005
+      }
+    ],
+    "result": {
+      "width": 512,
+      "height": 512,
+      "threshold": 35,
+      "minArea": 100,
+      "smoothingRadius": 1,
+      "regions": [
+        {
+          "id": 13,
+          "area": 4900,
+          "bbox": [
+            402,
+            293,
+            512,
+            412
+          ],
+          "centroid": [
+            473.5042857142857,
+            369.44081632653064
+          ],
+          "meanDifference": 89.84102040816326
+        },
+        {
+          "id": 29,
+          "area": 4059,
+          "bbox": [
+            206,
+            376,
+            361,
+            466
+          ],
+          "centroid": [
+            267.65927568366595,
+            414.2057156935206
+          ],
+          "meanDifference": 66.02143385070214
+        },
+        {
+          "id": 8,
+          "area": 2311,
+          "bbox": [
+            412,
+            215,
+            503,
+            295
+          ],
+          "centroid": [
+            464.3457377758546,
+            252.38295110341843
+          ],
+          "meanDifference": 48.72739073993942
+        },
+        {
+          "id": 11,
+          "area": 1965,
+          "bbox": [
+            259,
+            290,
+            362,
+            338
+          ],
+          "centroid": [
+            309.8234096692112,
+            313.4249363867684
+          ],
+          "meanDifference": 45.08447837150127
+        },
+        {
+          "id": 32,
+          "area": 1644,
+          "bbox": [
+            22,
+            416,
+            78,
+            509
+          ],
+          "centroid": [
+            44.48965936739659,
+            461.05474452554745
+          ],
+          "meanDifference": 43.59124087591241
+        },
+        {
+          "id": 5,
+          "area": 853,
+          "bbox": [
+            405,
+            119,
+            472,
+            155
+          ],
+          "centroid": [
+            438.8124267291911,
+            137.87104337631888
+          ],
+          "meanDifference": 40.77022274325908
+        },
+        {
+          "id": 34,
+          "area": 654,
+          "bbox": [
+            473,
+            424,
+            503,
+            460
+          ],
+          "centroid": [
+            486.81345565749234,
+            443.8608562691131
+          ],
+          "meanDifference": 61.15902140672783
+        },
+        {
+          "id": 35,
+          "area": 591,
+          "bbox": [
+            478,
+            458,
+            512,
+            490
+          ],
+          "centroid": [
+            497.6294416243655,
+            472.1370558375635
+          ],
+          "meanDifference": 52.598984771573605
+        },
+        {
+          "id": 16,
+          "area": 515,
+          "bbox": [
+            148,
+            314,
+            173,
+            351
+          ],
+          "centroid": [
+            159.39805825242718,
+            332.63495145631066
+          ],
+          "meanDifference": 46.01747572815534
+        },
+        {
+          "id": 22,
+          "area": 453,
+          "bbox": [
+            248,
+            348,
+            286,
+            372
+          ],
+          "centroid": [
+            266.23620309050773,
+            358.71081677704194
+          ],
+          "meanDifference": 41.38852097130243
+        },
+        {
+          "id": 27,
+          "area": 429,
+          "bbox": [
+            172,
+            372,
+            207,
+            394
+          ],
+          "centroid": [
+            189.002331002331,
+            383.4032634032634
+          ],
+          "meanDifference": 43.75058275058275
+        },
+        {
+          "id": 37,
+          "area": 396,
+          "bbox": [
+            274,
+            478,
+            300,
+            506
+          ],
+          "centroid": [
+            287.1010101010101,
+            489.87626262626264
+          ],
+          "meanDifference": 41.214646464646464
+        },
+        {
+          "id": 30,
+          "area": 355,
+          "bbox": [
+            58,
+            393,
+            88,
+            415
+          ],
+          "centroid": [
+            72.96056338028168,
+            405.0535211267606
+          ],
+          "meanDifference": 48.35774647887324
+        },
+        {
+          "id": 17,
+          "area": 349,
+          "bbox": [
+            231,
+            314,
+            272,
+            335
+          ],
+          "centroid": [
+            250.9140401146132,
+            324.1289398280802
+          ],
+          "meanDifference": 40.96275071633238
+        },
+        {
+          "id": 21,
+          "area": 291,
+          "bbox": [
+            302,
+            337,
+            328,
+            355
+          ],
+          "centroid": [
+            315.35051546391753,
+            345.25773195876286
+          ],
+          "meanDifference": 42.2680412371134
+        },
+        {
+          "id": 15,
+          "area": 281,
+          "bbox": [
+            382,
+            309,
+            411,
+            325
+          ],
+          "centroid": [
+            395.93238434163703,
+            317.12099644128114
+          ],
+          "meanDifference": 52.73309608540925
+        },
+        {
+          "id": 9,
+          "area": 261,
+          "bbox": [
+            503,
+            220,
+            512,
+            269
+          ],
+          "centroid": [
+            508.367816091954,
+            242.41379310344828
+          ],
+          "meanDifference": 61.46360153256705
+        },
+        {
+          "id": 2,
+          "area": 239,
+          "bbox": [
+            490,
+            52,
+            512,
+            73
+          ],
+          "centroid": [
+            501.77405857740587,
+            62.01673640167364
+          ],
+          "meanDifference": 51.18828451882845
+        },
+        {
+          "id": 12,
+          "area": 239,
+          "bbox": [
+            390,
+            293,
+            422,
+            308
+          ],
+          "centroid": [
+            404.6276150627615,
+            299.7029288702929
+          ],
+          "meanDifference": 46.38075313807531
+        },
+        {
+          "id": 20,
+          "area": 217,
+          "bbox": [
+            367,
+            329,
+            400,
+            349
+          ],
+          "centroid": [
+            381.08755760368666,
+            336.88018433179724
+          ],
+          "meanDifference": 48.276497695852534
+        },
+        {
+          "id": 3,
+          "area": 214,
+          "bbox": [
+            155,
+            89,
+            170,
+            107
+          ],
+          "centroid": [
+            162.20560747663552,
+            98.62616822429906
+          ],
+          "meanDifference": 41.71028037383178
+        },
+        {
+          "id": 39,
+          "area": 202,
+          "bbox": [
+            471,
+            497,
+            500,
+            511
+          ],
+          "centroid": [
+            487.6980198019802,
+            503.1039603960396
+          ],
+          "meanDifference": 50.306930693069305
+        },
+        {
+          "id": 1,
+          "area": 197,
+          "bbox": [
+            447,
+            0,
+            473,
+            27
+          ],
+          "centroid": [
+            458.5279187817259,
+            11.639593908629442
+          ],
+          "meanDifference": 41.90355329949239
+        },
+        {
+          "id": 7,
+          "area": 197,
+          "bbox": [
+            291,
+            194,
+            305,
+            219
+          ],
+          "centroid": [
+            297.6395939086294,
+            206.4771573604061
+          ],
+          "meanDifference": 42.746192893401016
+        },
+        {
+          "id": 14,
+          "area": 192,
+          "bbox": [
+            62,
+            295,
+            79,
+            318
+          ],
+          "centroid": [
+            68.984375,
+            304.859375
+          ],
+          "meanDifference": 40.916666666666664
+        },
+        {
+          "id": 4,
+          "area": 182,
+          "bbox": [
+            410,
+            113,
+            437,
+            123
+          ],
+          "centroid": [
+            421.2802197802198,
+            117.47252747252747
+          ],
+          "meanDifference": 40.53846153846154
+        },
+        {
+          "id": 26,
+          "area": 169,
+          "bbox": [
+            122,
+            372,
+            148,
+            385
+          ],
+          "centroid": [
+            133.58579881656806,
+            377.91715976331363
+          ],
+          "meanDifference": 42.67455621301775
+        },
+        {
+          "id": 23,
+          "area": 156,
+          "bbox": [
+            126,
+            352,
+            147,
+            371
+          ],
+          "centroid": [
+            135.9551282051282,
+            360.8974358974359
+          ],
+          "meanDifference": 42.87820512820513
+        },
+        {
+          "id": 25,
+          "area": 154,
+          "bbox": [
+            288,
+            356,
+            307,
+            370
+          ],
+          "centroid": [
+            297.7857142857143,
+            362.9025974025974
+          ],
+          "meanDifference": 38.532467532467535
+        },
+        {
+          "id": 6,
+          "area": 153,
+          "bbox": [
+            156,
+            139,
+            169,
+            157
+          ],
+          "centroid": [
+            160.84967320261438,
+            147.35294117647058
+          ],
+          "meanDifference": 43.02614379084967
+        },
+        {
+          "id": 33,
+          "area": 147,
+          "bbox": [
+            496,
+            421,
+            512,
+            441
+          ],
+          "centroid": [
+            504.2244897959184,
+            432.4829931972789
+          ],
+          "meanDifference": 38.30612244897959
+        },
+        {
+          "id": 36,
+          "area": 141,
+          "bbox": [
+            102,
+            463,
+            122,
+            485
+          ],
+          "centroid": [
+            110.92198581560284,
+            472.8723404255319
+          ],
+          "meanDifference": 43.276595744680854
+        },
+        {
+          "id": 19,
+          "area": 124,
+          "bbox": [
+            353,
+            325,
+            365,
+            340
+          ],
+          "centroid": [
+            357.46774193548384,
+            331.19354838709677
+          ],
+          "meanDifference": 49.056451612903224
+        },
+        {
+          "id": 24,
+          "area": 120,
+          "bbox": [
+            100,
+            353,
+            115,
+            365
+          ],
+          "centroid": [
+            107.04166666666667,
+            358.5083333333333
+          ],
+          "meanDifference": 42.625
+        },
+        {
+          "id": 28,
+          "area": 119,
+          "bbox": [
+            50,
+            373,
+            66,
+            389
+          ],
+          "centroid": [
+            57.747899159663866,
+            379.78991596638656
+          ],
+          "meanDifference": 45.12605042016807
+        },
+        {
+          "id": 10,
+          "area": 116,
+          "bbox": [
+            72,
+            268,
+            93,
+            280
+          ],
+          "centroid": [
+            82.16379310344827,
+            273.2586206896552
+          ],
+          "meanDifference": 40.827586206896555
+        },
+        {
+          "id": 31,
+          "area": 112,
+          "bbox": [
+            502,
+            401,
+            512,
+            417
+          ],
+          "centroid": [
+            507.42857142857144,
+            407.5625
+          ],
+          "meanDifference": 50.732142857142854
+        },
+        {
+          "id": 38,
+          "area": 102,
+          "bbox": [
+            90,
+            491,
+            106,
+            502
+          ],
+          "centroid": [
+            97.59803921568627,
+            495.61764705882354
+          ],
+          "meanDifference": 39.94117647058823
+        },
+        {
+          "id": 18,
+          "area": 100,
+          "bbox": [
+            167,
+            324,
+            182,
+            335
+          ],
+          "centroid": [
+            174.58,
+            328.38
+          ],
+          "meanDifference": 50.91
+        }
+      ],
+      "validPixels": 262144,
+      "changedPixels": 23899,
+      "changedPercent": 9.116744995117188,
+      "processingMs": 51.865999999999985,
+      "findings": {
+        "version": 1,
+        "summary": "Analysis identified 39 visual-change regions, covering 9.12% of valid processing pixels. Detected change pixels are distributed across 8 of 9 image-grid sectors. The largest region contains 4,900 changed pixels. These are preliminary visual findings requiring evidence inspection. Sensitive to threshold selection.",
+        "totalRegions": 39,
+        "changedPixels": 23899,
+        "validPixels": 262144,
+        "changedPercent": 9.116744995117188,
+        "grid": {
+          "width": 512,
+          "height": 512
+        },
+        "sizes": {
+          "smallest": 100,
+          "median": 217,
+          "largest": 4900
+        },
+        "distribution": [
+          {
+            "position": "upper-left",
+            "pixels": 367
+          },
+          {
+            "position": "upper-center",
+            "pixels": 0
+          },
+          {
+            "position": "upper-right",
+            "pixels": 1471
+          },
+          {
+            "position": "middle-left",
+            "pixels": 709
+          },
+          {
+            "position": "center",
+            "pixels": 2515
+          },
+          {
+            "position": "middle-right",
+            "pixels": 4359
+          },
+          {
+            "position": "lower-left",
+            "pixels": 2928
+          },
+          {
+            "position": "lower-center",
+            "pixels": 5532
+          },
+          {
+            "position": "lower-right",
+            "pixels": 6018
+          }
+        ],
+        "occupiedCells": 8,
+        "largest": [
+          {
+            "id": 13,
+            "area": 4900,
+            "centroid": [
+              473.5042857142857,
+              369.44081632653064
+            ],
+            "bbox": [
+              402,
+              293,
+              512,
+              412
+            ],
+            "location": {
+              "lat": 36.09422154017857,
+              "lng": -114.45194726562501
+            }
+          },
+          {
+            "id": 29,
+            "area": 4059,
+            "centroid": [
+              267.65927568366595,
+              414.2057156935206
+            ],
+            "bbox": [
+              206,
+              376,
+              361,
+              466
+            ],
+            "location": {
+              "lat": 36.033019529325266,
+              "lng": -114.73337599027624
+            }
+          },
+          {
+            "id": 8,
+            "area": 2311,
+            "centroid": [
+              464.3457377758546,
+              252.38295110341843
+            ],
+            "bbox": [
+              412,
+              215,
+              503,
+              295
+            ],
+            "location": {
+              "lat": 36.254261590288294,
+              "lng": -114.46446871788457
+            }
+          },
+          {
+            "id": 11,
+            "area": 1965,
+            "centroid": [
+              309.8234096692112,
+              313.4249363867684
+            ],
+            "bbox": [
+              259,
+              290,
+              362,
+              338
+            ],
+            "location": {
+              "lat": 36.17080575103371,
+              "lng": -114.67572971334288
+            }
+          },
+          {
+            "id": 32,
+            "area": 1644,
+            "centroid": [
+              44.48965936739659,
+              461.05474452554745
+            ],
+            "bbox": [
+              22,
+              416,
+              78,
+              509
+            ],
+            "location": {
+              "lat": 35.96896812271898,
+              "lng": -115.03849070008363
+            }
+          }
+        ],
+        "geographic": true,
+        "parameters": {
+          "threshold": 35,
+          "minArea": 100,
+          "smoothing": "3 × 3 mean filter",
+          "connectivity": 4
+        },
+        "detectorMs": 51.865999999999985,
+        "limitations": [
+          "RGB differences describe appearance, not cause or operational significance. No automatic object or terrain classification is applied.",
+          "Lighting, shadows, seasonal variation, clouds and residual misalignment may affect results; clouds and shadows are not automatically detected.",
+          "Region sizes refer to the processing grid, not geographic area. Small or low-contrast changes may be missed.",
+          "Coordinates use supplied north-up geographic bounds; geolocation is not independently verified.",
+          "Public browse imagery; seasonal and atmospheric variations can affect visual differences.",
+          "This is not labeled ground truth for accuracy measurement."
+        ]
+      },
+      "reliability": {
+        "version": 1,
+        "status": "Sensitive to threshold selection",
+        "reason": "13,782 pixels persist across all tested thresholds; 19,050 appear only at the lowest threshold (highest tested sensitivity).",
+        "thresholds": [
+          27,
+          35,
+          43
+        ],
+        "runs": [
+          {
+            "threshold": 27,
+            "regions": 48,
+            "changedPixels": 42949,
+            "changedPercent": 16.383743286132812
+          },
+          {
+            "threshold": 35,
+            "regions": 39,
+            "changedPixels": 23899,
+            "changedPercent": 9.116744995117188
+          },
+          {
+            "threshold": 43,
+            "regions": 24,
+            "changedPixels": 13782,
+            "changedPercent": 5.257415771484375
+          }
+        ],
+        "persistentPixels": 13782,
+        "unionPixels": 42949,
+        "primaryPersistentPixels": 13782,
+        "lowThresholdOnlyPixels": 19050,
+        "changedPercentMin": 5.257415771484375,
+        "changedPercentMax": 16.383743286132812,
+        "rangePercentagePoints": 11.126327514648438,
+        "regionPersistence": {
+          "1": {
+            "persistentPixels": 0,
+            "totalPixels": 197,
+            "label": "Sensitive to threshold selection"
+          },
+          "2": {
+            "persistentPixels": 189,
+            "totalPixels": 239,
+            "label": "Sensitive to threshold selection"
+          },
+          "3": {
+            "persistentPixels": 0,
+            "totalPixels": 214,
+            "label": "Sensitive to threshold selection"
+          },
+          "4": {
+            "persistentPixels": 0,
+            "totalPixels": 182,
+            "label": "Sensitive to threshold selection"
+          },
+          "5": {
+            "persistentPixels": 104,
+            "totalPixels": 853,
+            "label": "Sensitive to threshold selection"
+          },
+          "6": {
+            "persistentPixels": 0,
+            "totalPixels": 153,
+            "label": "Sensitive to threshold selection"
+          },
+          "7": {
+            "persistentPixels": 0,
+            "totalPixels": 197,
+            "label": "Sensitive to threshold selection"
+          },
+          "8": {
+            "persistentPixels": 1296,
+            "totalPixels": 2311,
+            "label": "Sensitive to threshold selection"
+          },
+          "9": {
+            "persistentPixels": 223,
+            "totalPixels": 261,
+            "label": "Stable across tested thresholds"
+          },
+          "10": {
+            "persistentPixels": 0,
+            "totalPixels": 116,
+            "label": "Sensitive to threshold selection"
+          },
+          "11": {
+            "persistentPixels": 989,
+            "totalPixels": 1965,
+            "label": "Sensitive to threshold selection"
+          },
+          "12": {
+            "persistentPixels": 155,
+            "totalPixels": 239,
+            "label": "Sensitive to threshold selection"
+          },
+          "13": {
+            "persistentPixels": 4679,
+            "totalPixels": 4900,
+            "label": "Stable across tested thresholds"
+          },
+          "14": {
+            "persistentPixels": 0,
+            "totalPixels": 192,
+            "label": "Sensitive to threshold selection"
+          },
+          "15": {
+            "persistentPixels": 215,
+            "totalPixels": 281,
+            "label": "Sensitive to threshold selection"
+          },
+          "16": {
+            "persistentPixels": 122,
+            "totalPixels": 515,
+            "label": "Sensitive to threshold selection"
+          },
+          "17": {
+            "persistentPixels": 0,
+            "totalPixels": 349,
+            "label": "Sensitive to threshold selection"
+          },
+          "18": {
+            "persistentPixels": 0,
+            "totalPixels": 100,
+            "label": "Sensitive to threshold selection"
+          },
+          "19": {
+            "persistentPixels": 0,
+            "totalPixels": 124,
+            "label": "Sensitive to threshold selection"
+          },
+          "20": {
+            "persistentPixels": 140,
+            "totalPixels": 217,
+            "label": "Sensitive to threshold selection"
+          },
+          "21": {
+            "persistentPixels": 0,
+            "totalPixels": 291,
+            "label": "Sensitive to threshold selection"
+          },
+          "22": {
+            "persistentPixels": 132,
+            "totalPixels": 453,
+            "label": "Sensitive to threshold selection"
+          },
+          "23": {
+            "persistentPixels": 0,
+            "totalPixels": 156,
+            "label": "Sensitive to threshold selection"
+          },
+          "24": {
+            "persistentPixels": 0,
+            "totalPixels": 120,
+            "label": "Sensitive to threshold selection"
+          },
+          "25": {
+            "persistentPixels": 0,
+            "totalPixels": 154,
+            "label": "Sensitive to threshold selection"
+          },
+          "26": {
+            "persistentPixels": 0,
+            "totalPixels": 169,
+            "label": "Sensitive to threshold selection"
+          },
+          "27": {
+            "persistentPixels": 156,
+            "totalPixels": 429,
+            "label": "Sensitive to threshold selection"
+          },
+          "28": {
+            "persistentPixels": 0,
+            "totalPixels": 119,
+            "label": "Sensitive to threshold selection"
+          },
+          "29": {
+            "persistentPixels": 3515,
+            "totalPixels": 4059,
+            "label": "Stable across tested thresholds"
+          },
+          "30": {
+            "persistentPixels": 196,
+            "totalPixels": 355,
+            "label": "Sensitive to threshold selection"
+          },
+          "31": {
+            "persistentPixels": 0,
+            "totalPixels": 112,
+            "label": "Sensitive to threshold selection"
+          },
+          "32": {
+            "persistentPixels": 556,
+            "totalPixels": 1644,
+            "label": "Sensitive to threshold selection"
+          },
+          "33": {
+            "persistentPixels": 0,
+            "totalPixels": 147,
+            "label": "Sensitive to threshold selection"
+          },
+          "34": {
+            "persistentPixels": 474,
+            "totalPixels": 654,
+            "label": "Sensitive to threshold selection"
+          },
+          "35": {
+            "persistentPixels": 417,
+            "totalPixels": 591,
+            "label": "Sensitive to threshold selection"
+          },
+          "36": {
+            "persistentPixels": 0,
+            "totalPixels": 141,
+            "label": "Sensitive to threshold selection"
+          },
+          "37": {
+            "persistentPixels": 104,
+            "totalPixels": 396,
+            "label": "Sensitive to threshold selection"
+          },
+          "38": {
+            "persistentPixels": 0,
+            "totalPixels": 102,
+            "label": "Sensitive to threshold selection"
+          },
+          "39": {
+            "persistentPixels": 120,
+            "totalPixels": 202,
+            "label": "Sensitive to threshold selection"
+          }
+        },
+        "method": "Pixel-mask intersection across three thresholds, after identical minimum-area filtering. The stable label requires intersection/union ≥ 0.80 (heuristic). Per-region labels require ≥ 80% of that region's pixels to persist. Neither ratio is confidence or accuracy. Region identity is not matched across runs.",
+        "step": 8,
+        "auditMs": 25.69230000000016
+      },
+      "quality": {
+        "version": 1,
+        "dimensions": {
+          "width": 512,
+          "height": 512
+        },
+        "validFraction": 1,
+        "brightness": {
+          "meanBefore": 134.1951428812681,
+          "meanAfter": 127.97786318512226,
+          "delta": -6.217279696145852,
+          "warningThreshold": 20
+        },
+        "alignment": {
+          "status": "No small-shift cue detected",
+          "shiftX": -4,
+          "shiftY": -4,
+          "baselineResidual": 13.818861777879416,
+          "bestResidual": 13.359425838811745,
+          "relativeReduction": 0.03324701747890078,
+          "samples": 3969,
+          "meanTexture": 3.570167003755577,
+          "searchRadius": 4
+        },
+        "geographic": true,
+        "warnings": [],
+        "limitations": [
+          "Quality screening is heuristic and not a validated image-quality or registration score.",
+          "The shift screen tests only integer translations within ±4 processing pixels; rotation, scale, subpixel displacement, perspective, and local distortions remain unchecked.",
+          "No automatic cloud, shadow or atmospheric detection. No radiometric normalization or geometric correction is applied."
+        ],
+        "qualityMs": 16.967999999999847
+      },
+      "timing": {
+        "detectorMs": 51.865999999999985,
+        "auditMs": 25.69230000000016,
+        "qualityMs": 16.967999999999847,
+        "totalMs": 96.59400000000005
+      }
+    },
+    "identicalImageChangedPixels": 0,
+    "baselinePreserved": true
+  }
+]

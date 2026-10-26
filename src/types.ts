@@ -48,6 +48,8 @@ export type Scene = {
   caveats: string[];
   alignment: string;
   attribution: string;
+  sourceOrganization?: string;
+  metadataOrigin?: "user";
   article?: string;
   licenseUrl?: string;
   files: { file: string; sourceUrl?: string }[];

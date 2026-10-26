@@ -12,6 +12,8 @@ import {
   X,
   Save,
 } from "lucide-react";
+import SourceMetadata from "./SourceMetadata";
+import { safeSourceURL } from "./metadata.mjs";
 import Evidence from "./Evidence";
 import AnalysisInsights from "./AnalysisInsights";
 import UploadDialog from "./UploadDialog";
@@ -41,6 +43,8 @@ export default function App() {
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [step, setStep] = useState(1),
+    [uploadEpoch, setUploadEpoch] = useState(0),
+    [reportReady, setReportReady] = useState(false),
     [saved, setSaved] = useState("Not saved"),
     [offline, setOffline] = useState(!navigator.onLine),
     [cached, setCached] = useState(false),
@@ -52,12 +56,15 @@ export default function App() {
     );
   const worker = useRef<Worker | null>(null),
     generation = useRef(0),
+    reportInFlight = useRef(false),
     loadGeneration = useRef(0),
     saveQueue = useRef<Promise<unknown>>(Promise.resolve()),
     hydrated = useRef(false),
     saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   function cancelProcessing() {
     generation.current++;
+    setReportContent("");
+    setReportReady(false);
     worker.current?.terminate();
     worker.current = null;
   }
@@ -371,10 +378,14 @@ export default function App() {
     }
   }
   async function exportReport(download = false) {
-    if (!pair || !result) return;
+    if (!pair || !result || busy || reportInFlight.current) return;
+    const reportGeneration = generation.current;
+    reportInFlight.current = true;
+    setReportReady(false);
     setReportBusy(true);
     try {
       const html = await createReport(title, pair, result, reviews);
+      if (reportGeneration !== generation.current) return;
       if (!download) {
         setStep(4);
         setReportContent(html);
@@ -389,8 +400,9 @@ export default function App() {
         setTimeout(() => URL.revokeObjectURL(url), 10000);
       }
     } catch (e) {
-      setError("Report could not be generated. Please try again.");
+      if (reportGeneration === generation.current) setError("Report could not be generated. Please try again.");
     } finally {
+      reportInFlight.current = false;
       setReportBusy(false);
     }
   }
@@ -459,6 +471,7 @@ export default function App() {
       cancelProcessing();
       loadGeneration.current++;
       if (saveTimer.current) clearTimeout(saveTimer.current);
+      setUploadEpoch(v=>v+1);
       setPair(null);
       setResult(null);
       setReviews({});
@@ -543,7 +556,7 @@ export default function App() {
               </p>
             </div>
             <UploadDialog
-              key={pair?.scene.id ?? "new"}
+              key={`${pair?.scene.id ?? "new"}-${uploadEpoch}`}
               inline
               onClose={() => setStep(pair ? 2 : 1)}
               onLoad={adoptPair}
@@ -960,6 +973,7 @@ export default function App() {
               <summary>
                 <Info size={15} /> Sources & methodology
               </summary>
+              {pair.scene.id.startsWith("upload-") && <SourceMetadata key={pair.scene.id} scene={pair.scene} disabled={!!busy || reportBusy} onSave={scene=>setPair(current=>current?.scene.id === scene.id ? {...current,scene} : current)}/>}
               <p>{pair.scene.description}</p>
               <p>{pair.scene.alignment}</p>
               <p>{pair.scene.attribution}</p>
@@ -977,8 +991,8 @@ export default function App() {
               </p>
               {pair.scene.files.map((f) => (
                 <p key={f.file}>
-                  {f.sourceUrl ? (
-                    <a href={f.sourceUrl} target="_blank" rel="noreferrer">
+                  {safeSourceURL(f.sourceUrl) ? (
+                    <a href={safeSourceURL(f.sourceUrl)} target="_blank" rel="noreferrer">
                       {f.file} — source imagery <ArrowUpRight size={12} />
                     </a>
                   ) : (
@@ -1059,6 +1073,7 @@ export default function App() {
                 </button>
                 <button
                   className="secondary"
+                  disabled={!reportReady}
                   onClick={() => {
                     const frame = document.getElementById(
                       "report-preview",
@@ -1067,7 +1082,7 @@ export default function App() {
                     frame.contentWindow?.print();
                   }}
                 >
-                  Print / Save as PDF
+                  {reportReady ? "Print / Save as PDF" : "Loading report images…"}
                 </button>
                 <button
                   aria-label="Close report"
@@ -1081,6 +1096,16 @@ export default function App() {
               id="report-preview"
               title="TerraLens printable analysis report"
               srcDoc={reportContent}
+              onLoad={async e=>{
+                const frame=e.currentTarget, doc=frame.contentDocument;
+                if (!doc) return;
+                await Promise.all(Array.from(doc.images).map(img=>img.decode().catch(()=>{})));
+                if (frame.isConnected && frame.contentDocument === doc) {
+                  const failed=Array.from(doc.images).some(img=>!img.naturalWidth);
+                  setReportReady(!failed);
+                  if (failed) setError("A report image failed to load. Regenerate the report before printing.");
+                }
+              }}
             />
           </section>
         </div>
