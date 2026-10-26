@@ -1,3 +1,7 @@
+# Latest upgrade
+
+The final intelligence/reliability upgrade has 27 passing tests and a passing production build. See [the measured upgrade record](validation/UPGRADE-VALIDATION.md) for current scenario results, performance and browser verification limits. The historical checks below refer to the earlier prototype and do not certify the new panels.
+
 # TerraLens validation record
 
 Date: 2026-10-25. These are prototype checks, not a claim of operational detection accuracy.

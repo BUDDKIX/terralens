@@ -2,49 +2,26 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Aperture,
   ArrowUpRight,
-  ChevronRight,
   Check,
   Download,
   FileText,
-  Focus,
   Globe2,
   Info,
-  Layers,
-  Map,
   Play,
-  Radio,
-  RefreshCw,
-  ScanLine,
-  Settings2,
-  ShieldCheck,
   Upload,
   X,
-  Activity,
-  Satellite,
-  Clock3,
-  Search,
-  AlertTriangle,
   Save,
 } from "lucide-react";
 import Evidence from "./Evidence";
+import AnalysisInsights from "./AnalysisInsights";
 import UploadDialog from "./UploadDialog";
 import Viewer from "./Viewer";
 import GeoMap from "./GeoMap";
-import {
-  localData,
-  validatePair,
-  processingPixels,
-} from "./images";
+import { localData, validatePair, processingPixels } from "./images";
 import { pixelToGeo, reviewObservation } from "./engine.mjs";
-import { loadAnalysis, saveAnalysis } from "./storage";
-import { createReport } from "./export";
-import type {
-  Pair,
-  Scene,
-  Result,
-  Review,
-  Saved,
-} from "./types";
+import { loadAnalysis, saveAnalysis, clearAnalysis } from "./storage";
+import { createReport, createGeoJSON } from "./export";
+import type { Pair, Scene, Result, Review, Saved } from "./types";
 import { emptyReview } from "./types";
 const number = (n: number) => n.toLocaleString();
 
@@ -63,14 +40,11 @@ export default function App() {
     [busy, setBusy] = useState("Loading workspace"),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [upload, setUpload] = useState(false),
-    [sources, setSources] = useState(false),
+    [step, setStep] = useState(1),
     [saved, setSaved] = useState("Not saved"),
     [offline, setOffline] = useState(!navigator.onLine),
     [cached, setCached] = useState(false),
     [tab, setTab] = useState<"imagery" | "map">("imagery"),
-    [feed, setFeed] = useState(""),
-    [events, setEvents] = useState<{ time: string; text: string }[]>([]),
     [reportBusy, setReportBusy] = useState(false),
     [reportContent, setReportContent] = useState(""),
     [confirmation, setConfirmation] = useState<{ action: () => void } | null>(
@@ -78,23 +52,10 @@ export default function App() {
     );
   const worker = useRef<Worker | null>(null),
     generation = useRef(0),
-    feedTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
-    hydrated = useRef(false);
-  function log(text: string) {
-    setEvents((a) =>
-      [
-        {
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }),
-          text,
-        },
-        ...a,
-      ].slice(0, 8),
-    );
-  }
+    loadGeneration = useRef(0),
+    saveQueue = useRef<Promise<unknown>>(Promise.resolve()),
+    hydrated = useRef(false),
+    saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   function cancelProcessing() {
     generation.current++;
     worker.current?.terminate();
@@ -102,6 +63,7 @@ export default function App() {
   }
   async function openScene(scene: Scene) {
     cancelProcessing();
+    const loadId = ++loadGeneration.current;
     setBusy("Loading satellite imagery");
     setError("");
     try {
@@ -109,8 +71,10 @@ export default function App() {
         scene.files.map((f) => localData("/imagery/" + f.file)),
       );
       const dimensions = await validatePair(before, after);
+      if (loadId !== loadGeneration.current) return null;
       const next = { before, after, ...dimensions, scene };
       setPair(next);
+      setStep(2);
       setTitle(scene.title);
       setResult(null);
       setReviews({});
@@ -121,35 +85,24 @@ export default function App() {
       setTab("imagery");
       setFilter("all");
       setQuery("");
-      log("Opened " + scene.title);
       return next;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unable to open scene");
+      if (loadId === loadGeneration.current)
+        setError(e instanceof Error ? e.message : "Unable to open scene");
       return null;
     } finally {
-      setBusy("");
+      if (loadId === loadGeneration.current) setBusy("");
     }
   }
   useEffect(() => {
     let mounted = true;
     async function init() {
+      const initialGeneration = loadGeneration.current;
+      // Session recovery and custom upload do not depend on demo availability.
       try {
-        const response = await fetch("/imagery/manifest.json");
-        if (!response.ok) throw new Error("Scene catalog unavailable.");
-        const manifest = await response.json();
-        const list = manifest.scenes as Scene[];
+        const existing = await loadAnalysis();
         if (!mounted) return;
-        setScenes(list);
-        let existing: Saved | null = null;
-        try {
-          existing = await loadAnalysis();
-        } catch {
-          setNotice(
-            "Local storage is unavailable; keep this tab open and export your report.",
-          );
-        }
-        if (!mounted) return;
-        if (existing) {
+        if (existing && initialGeneration === loadGeneration.current) {
           setPair(existing.pair);
           setResult(existing.result);
           setReviews(existing.reviews);
@@ -158,21 +111,35 @@ export default function App() {
           setTitle(existing.title);
           setAligned(existing.aligned);
           setSelected(existing.result?.regions[0]?.id ?? null);
+          setStep(existing.result ? 3 : 2);
           setSaved("Restored local analysis");
-          setBusy("");
-          log("Restored saved analysis");
-        } else await openScene(list[0]);
-        hydrated.current = true;
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Workspace failed to load");
-        setBusy("");
+        }
+      } catch {
+        if (mounted)
+          setNotice(
+            "Local storage is unavailable. Export a report to retain your work.",
+          );
+      }
+      if (!mounted) return;
+      hydrated.current = true;
+      setBusy("");
+      try {
+        const response = await fetch("/imagery/manifest.json");
+        if (!response.ok) throw new Error();
+        const manifest = await response.json();
+        if (mounted) setScenes(manifest.scenes);
+      } catch {
+        if (mounted)
+          setNotice(
+            "Demo catalog unavailable. You can still upload your own image pair.",
+          );
       }
     }
     init();
     return () => {
       mounted = false;
       cancelProcessing();
-      if (feedTimer.current) clearTimeout(feedTimer.current);
+      loadGeneration.current++;
     };
   }, []);
   useEffect(() => {
@@ -199,26 +166,92 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!hydrated.current || !pair) return;
-    setSaved("Saving…");
-    saveAnalysis({
-      version: 1,
-      pair,
-      result,
-      reviews,
-      threshold,
-      minArea,
-      title,
-      aligned,
-      savedAt: new Date().toISOString(),
-    })
-      .then(() => setSaved("Saved on this device"))
-      .catch(() => {
-        setSaved("Save failed");
-        setNotice(
-          "Unable to save locally. Export the evidence report before leaving this page.",
-        );
-      });
+    let current = true;
+    setSaved("Unsaved changes…");
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveTimer.current = null;
+      setSaved("Saving…");
+      const snapshot: Saved = {
+        version: 1,
+        pair,
+        result,
+        reviews,
+        threshold,
+        minArea,
+        title,
+        aligned,
+        savedAt: new Date().toISOString(),
+      };
+      saveQueue.current = saveQueue.current
+        .catch(() => {})
+        .then(() => saveAnalysis(snapshot));
+      saveQueue.current
+        .then(() => {
+          if (current) setSaved("Saved on this device");
+        })
+        .catch(() => {
+          if (!current) return;
+          setSaved("Save failed");
+          setNotice(
+            "Unable to save locally. Export the evidence report before leaving this page.",
+          );
+        });
+    }, 800);
+    return () => {
+      current = false;
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    };
   }, [pair, result, reviews, threshold, minArea, title, aligned]);
+  useEffect(() => {
+    if (!reportContent && !confirmation) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+    const controls = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          "button:not(:disabled), a[href], input, select, textarea, iframe",
+        ) ?? [],
+      );
+    controls()[0]?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setReportContent("");
+        setConfirmation(null);
+      }
+      if (event.key !== "Tab") return;
+      const list = controls(),
+        first = list[0],
+        last = list.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("keydown", key);
+      previous?.focus();
+    };
+  }, [reportContent, confirmation]);
+  useEffect(() => {
+    if (
+      saved !== "Unsaved changes…" &&
+      saved !== "Saving…" &&
+      saved !== "Save failed"
+    )
+      return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [saved]);
   async function analyze(p = pair, t = threshold, area = minArea) {
     if (!p) return;
     cancelProcessing();
@@ -234,10 +267,13 @@ export default function App() {
       worker.current = w;
       w.onmessage = (e) => {
         if (e.data.id !== generation.current) return;
+        if (e.data.stage) {
+          setBusy(e.data.stage);
+          return;
+        }
         if (e.data.error) {
           setError(e.data.error);
           setBusy("");
-          setFeed("");
           w.terminate();
           return;
         }
@@ -247,57 +283,58 @@ export default function App() {
           createdAt: new Date().toISOString(),
         } as Result;
         setResult(r);
+        setStep(3);
         setReviews({});
         setSelected(r.regions[0]?.id ?? null);
         setFilter("all");
         setQuery("");
         setBusy("");
-        setFeed("");
-        log(
-          `${r.regions.length} candidate regions · ${r.processingMs.toFixed(0)} ms`,
-        );
         w.terminate();
         worker.current = null;
       };
       w.onerror = () => {
+        if (id !== generation.current) return;
         setError(
           "Image processing failed. Try a smaller pair or reload the scene.",
         );
         setBusy("");
-        setFeed("");
         w.terminate();
       };
       w.postMessage(
-        { id, ...pixels, options: { threshold: t, minArea: area } },
+        {
+          id,
+          ...pixels,
+          options: { threshold: t, minArea: area },
+          scene: {
+            bbox: p.scene.bbox,
+            caveats: p.scene.caveats,
+            alignment: p.scene.alignment,
+          },
+        },
         [pixels.before.buffer, pixels.after.buffer],
       );
     } catch (e) {
       if (id === generation.current) {
         setError(e instanceof Error ? e.message : "Processing failed");
         setBusy("");
-        setFeed("");
       }
     }
   }
-  // Sensitivity previews remain live until review begins. Reviewed runs are never silently replaced.
+  // Explicit reruns preserve existing evidence until a replacement completes.
   const reviewed = Object.values(reviews).some(
     (r) =>
       r.status !== "unreviewed" || r.notes || r.category !== "Unclassified",
   );
   const stale =
     !!result && (result.threshold !== threshold || result.minArea !== minArea);
-  useEffect(() => {
-    if (!stale || reviewed || busy || !aligned) return;
-    const timer = setTimeout(() => analyze(), 450);
-    return () => clearTimeout(timer);
-  }, [threshold, minArea]);
   function updateReview(patch: Partial<Review>) {
-    if (selected === null) return;
+    if (
+      selected === null ||
+      busy ||
+      !result?.regions.some((r) => r.id === selected)
+    )
+      return;
     setReviews((r) => reviewObservation(r, selected, patch));
-    if (patch.status)
-      log(
-        `OBS-${String(selected).padStart(3, "0")} ${patch.status} by analyst`,
-      );
   }
   function replaceReviewed(action: () => void) {
     if (reviewed) setConfirmation({ action });
@@ -313,26 +350,25 @@ export default function App() {
         openScene(s);
       });
   }
-  function replay() {
-    replaceReviewed(startReplay);
-  }
-  function startReplay() {
-    if (!pair || busy || feed) return;
-    setFeed("Waiting for scheduled image");
-    setResult(null);
-    setReviews({});
-    setSelected(null);
-    log("Simulated imagery feed started");
-    feedTimer.current = setTimeout(() => {
-      setFeed("Later image received");
-      log(
-        "Prepared image received · " + (pair.scene.dates[1] || "unknown date"),
+  function exportGeoJSON() {
+    if (!pair || !result) return;
+    try {
+      const collection = createGeoJSON(result, reviews, pair.scene.bbox);
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(collection, null, 2)], {
+          type: "application/geo+json",
+        }),
       );
-      feedTimer.current = setTimeout(() => {
-        setFeed("Processing received imagery");
-        analyze();
-      }, 800);
-    }, 1600);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "TerraLens-observations.geojson";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "GeoJSON export failed.",
+      );
+    }
   }
   async function exportReport(download = false) {
     if (!pair || !result) return;
@@ -340,6 +376,7 @@ export default function App() {
     try {
       const html = await createReport(title, pair, result, reviews);
       if (!download) {
+        setStep(4);
         setReportContent(html);
       } else {
         const url = URL.createObjectURL(
@@ -351,7 +388,6 @@ export default function App() {
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 10000);
       }
-      log("Evidence report exported");
     } catch (e) {
       setError("Report could not be generated. Please try again.");
     } finally {
@@ -359,6 +395,9 @@ export default function App() {
     }
   }
 
+  const hasGeography = !!(
+    pair && pixelToGeo(0, 0, pair.width, pair.height, pair.scene.bbox)
+  );
   const selectedRegion = result?.regions.find((r) => r.id === selected),
     review =
       selected === null ? emptyReview : (reviews[selected] ?? emptyReview);
@@ -395,259 +434,310 @@ export default function App() {
       .getElementById("evidence-panel")
       ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, []);
+  function adoptPair(p: Pair) {
+    replaceReviewed(() => {
+      cancelProcessing();
+      loadGeneration.current++;
+      setPair(p);
+      setTitle(p.scene.title);
+      setResult(null);
+      setReviews({});
+      setSelected(null);
+      setAligned(false);
+      setThreshold(35);
+      setMinArea(100);
+      setTab("imagery");
+      setFilter("all");
+      setQuery("");
+      setError("");
+      setStep(2);
+      setBusy("");
+    });
+  }
+  function newAnalysis() {
+    replaceReviewed(() => {
+      cancelProcessing();
+      loadGeneration.current++;
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      setPair(null);
+      setResult(null);
+      setReviews({});
+      setSelected(null);
+      setAligned(false);
+      setTitle("");
+      setReportContent("");
+      setStep(1);
+      setError("");
+      setBusy("");
+      saveQueue.current = saveQueue.current.catch(() => {}).then(clearAnalysis);
+      saveQueue.current.then(
+        () => setSaved("New workspace"),
+        () => setNotice("Could not clear the saved session."),
+      );
+    });
+  }
+  const categories = [
+    "Unclassified",
+    "Water coverage change",
+    "Vegetation or land-cover change",
+    "Surface appearance change",
+    "Infrastructure requiring inspection",
+    "Image artifact",
+  ];
   return (
     <div className="app-frame">
-      <aside className="rail">
-        <a className="brand-mark" href="/" aria-label="TerraLens workspace">
-          <Aperture size={27} />
-        </a>
-        <div className="rail-items">
+      <header className="topbar">
+        <div className="wordmark">
+          <Aperture size={23} /> TerraLens{" "}
+          <span>GEOINT / IMAGE COMPARISON</span>
+        </div>
+        <div className="header-actions">
+          <small>
+            {offline
+              ? "Offline"
+              : cached
+                ? "Cache installed"
+                : "Local processing"}
+          </small>
           <button
-            className={tab === "imagery" ? "selected" : ""}
-            title="Imagery workspace"
-            aria-label="Imagery workspace"
-            onClick={() => setTab("imagery")}
+            className="secondary"
+            onClick={newAnalysis}
+            disabled={!!busy || reportBusy}
           >
-            <Layers size={21} />
-          </button>
-          <button
-            className={tab === "map" ? "selected" : ""}
-            title="Observation map"
-            aria-label="Observation map"
-            onClick={() => setTab("map")}
-          >
-            <Globe2 size={21} />
-          </button>
-          <button
-            title="Export evidence report"
-            aria-label="Export evidence report"
-            disabled={!result || reportBusy}
-            onClick={() => exportReport()}
-          >
-            <FileText size={20} />
+            <Upload size={15} /> New Analysis
           </button>
         </div>
-        <button
-          className="rail-info"
-          title="Sources and methodology"
-          aria-label="Sources and methodology"
-          onClick={() => setSources(true)}
-        >
-          <Info size={20} />
-        </button>
-        <div className="avatar">TL</div>
-      </aside>
-      <div className="app-main">
-        <header className="topbar">
-          <div className="wordmark">
-            TERRA<span>LENS</span>
-            <i /> <span className="product-label">GEOSPATIAL INTELLIGENCE</span>
-          </div>
-          <div className="top-status">
-            <span className="connection">
-              <i className={"status-dot " + (offline ? "offline" : "")} />
-              {offline
-                ? "Offline"
-                : cached
-                  ? "Offline ready"
-                  : "Local processing"}
-            </span>
-            <span className="prototype">PROTOTYPE</span>
-            <button
-              className="icon-button"
-              aria-label="View sources"
-              onClick={() => setSources(true)}
-            >
-              <Info size={17} />
+      </header>
+      <main>
+        <div className="mission-strip">
+          <span>IMAGERY ANALYSIS WORKSTATION</span>
+          <span>UNCLASSIFIED / DEMONSTRATION</span>
+        </div>
+        {error && (
+          <div className="error-box" role="alert">
+            {error}
+            <button aria-label="Dismiss error" onClick={() => setError("")}>
+              <X size={16} />
             </button>
           </div>
-        </header>
-        <main>
-          <div className="breadcrumb">
-            WORKSPACE <ChevronRight size={11} /> RECONNAISSANCE ANALYSIS{" "}
-            <span>01 / TERRAIN OBSERVATION</span>
+        )}
+        {notice && (
+          <div className="notice-box" role="status">
+            {notice}
+            <button aria-label="Dismiss notice" onClick={() => setNotice("")}>
+              <X size={16} />
+            </button>
           </div>
-          <section className="page-heading">
-            <div>
-              <div className="eyebrow">
-                <span className="tiny-line" /> EVIDENCE BEFORE INTERPRETATION
-              </div>
-              <h1>
-                See what changed.<span> Understand what matters.</span>
-              </h1>
+        )}
+        {busy && (
+          <div className="processing" role="status">
+            <span /> {busy}…
+          </div>
+        )}
+        {step === 1 && (
+          <section className="load-screen">
+            <div className="section-intro">
+              <h1>Establish the comparison.</h1>
               <p>
-                Compare satellite imagery. Investigate visual changes. Build a
-                traceable evidence record.
+                Load an aligned image pair or select a satellite demonstration.
               </p>
             </div>
-            <div className="heading-actions">
+            <UploadDialog
+              key={pair?.scene.id ?? "new"}
+              inline
+              onClose={() => setStep(pair ? 2 : 1)}
+              onLoad={adoptPair}
+            />
+            <div className="demo-picker">
+              <div>
+                <h2>Reference scenarios</h2>
+                <p>Public imagery · documented provenance</p>
+              </div>
+              <select
+                aria-label="Select Demo Scenario"
+                value=""
+                disabled={!!busy}
+                onChange={(e) => switchScene(e.target.value)}
+              >
+                <option value="">Select Demo Scenario</option>
+                {scenes.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {pair && (
               <button
                 className="secondary"
-                onClick={() => setUpload(true)}
-                disabled={!!busy || !!feed}
+                onClick={() => setStep(result ? 3 : 2)}
               >
-                <Upload size={15} /> Upload imagery
+                Return to current analysis
               </button>
-              <button
-                className="primary"
-                onClick={() => exportReport()}
-                disabled={!result || reportBusy || !!busy}
-              >
-                <FileText size={16} />
-                {reportBusy ? "Preparing…" : "Export report"}
-                <ArrowUpRight size={14} />
-              </button>
-            </div>
+            )}
           </section>
-          {error && (
-            <div className="error-box" role="alert">
-              <AlertTriangle size={16} />
-              {error}
-              <button aria-label="Dismiss error" onClick={() => setError("")}>
-                <X size={15} />
-              </button>
-            </div>
-          )}
-          {notice && (
-            <div className="notice-box">
-              <Info size={15} />
-              {notice}
-              <button
-                aria-label="Dismiss notification"
-                onClick={() => setNotice("")}
-              >
-                <X size={15} />
-              </button>
-            </div>
-          )}
-          <div className="workspace-strip">
-            <div className="scene-select">
-              <Satellite size={20} />
+        )}
+        {pair && step > 1 && (
+          <>
+            <div className="workspace-heading">
               <div>
-                <label htmlFor="scene">ACTIVE SCENE</label>
-                <select
-                  id="scene"
-                  disabled={!!busy || !!feed}
-                  value={pair?.scene.id ?? ""}
-                  onChange={(e) => switchScene(e.target.value)}
-                >
-                  {pair?.scene.id.startsWith("upload") && (
-                    <option value={pair.scene.id}>{pair.scene.title}</option>
-                  )}
-                  {scenes.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.title}
-                    </option>
-                  ))}
-                </select>
+                <label className="title-label">
+                  Analysis title
+                  <input
+                    aria-label="Analysis title"
+                    value={title}
+                    maxLength={120}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </label>
+                <p>
+                  {pair.width} × {pair.height} source pixels ·{" "}
+                  {pair.scene.sensor}
+                </p>
               </div>
+              <button
+                className="secondary"
+                onClick={() => setStep(1)}
+                disabled={!!busy || reportBusy}
+              >
+                Change images
+              </button>
             </div>
-            <div className="scene-meta">
-              <span>ACQUISITION WINDOW</span>
-              <strong>
-                {pair?.scene.dates[0] || "Unknown"}
-                <span className="date-arrow">→</span>
-                {pair?.scene.dates[1] || "Unknown"}
-              </strong>
-            </div>
-            <div className="scene-meta sensor">
-              <span>SENSOR / COMPOSITE</span>
-              <strong>
-                {pair?.scene.sensor || "—"} <small>{pair?.scene.color}</small>
-              </strong>
-            </div>
-            <div className="source-pill">
-              <i className="status-dot" />
-              {pair?.scene.id.startsWith("upload")
-                ? "USER UPLOAD"
-                : "REAL SATELLITE DATA"}
-            </div>
-          </div>
-          <div className="stats-grid">
-            <div className="stat">
-              <span>
-                CANDIDATE REGIONS
-                <ScanLine size={16} />
-              </span>
-              <strong>
-                {result ? number(result.regions.length) : "—"}
-                <small>awaiting interpretation</small>
-              </strong>
-            </div>
-            <div className="stat">
-              <span>
-                VISUAL DIFFERENCE
-                <Layers size={16} />
-              </span>
-              <strong>
-                {result ? result.changedPercent.toFixed(1) : "—"}
-                <em>{result ? "%" : ""}</em>
-                <small>of valid processing pixels</small>
-              </strong>
-            </div>
-            <div className="stat">
-              <span>
-                ANALYST REVIEW
-                <ShieldCheck size={16} />
-              </span>
-              <strong>
-                {approved}
-                <em>/ {result?.regions.length ?? 0}</em>
-                <small>approved observations</small>
-              </strong>
-            </div>
-            <div className="stat">
-              <span>
-                PROCESSING TIME
-                <Activity size={16} />
-              </span>
-              <strong>
-                {result ? result.processingMs.toFixed(0) : "—"}
-                <em>{result ? "ms" : ""}</em>
-                <small>measured detector runtime</small>
-              </strong>
-            </div>
-          </div>
-          <div className="analysis-layout">
-            <section className="left-workspace">
-              <div className="panel main-panel">
-                <div className="panel-heading">
-                  <div>
-                    <span className="panel-index">01</span>
-                    <h2>Imagery workspace</h2>
-                    <span className="subtle-tag">
-                      {pair?.scene.bbox ? "GEOREFERENCED" : "IMAGE SPACE"}
-                    </span>
-                  </div>
-                  <div className="tab-controls">
+            {step > 1 && (
+              <section className="panel analysis-workspace">
+                {!result && (
+                  <Viewer
+                    key={pair.scene.id}
+                    pair={pair}
+                    result={result}
+                    reviews={reviews}
+                    selected={selected}
+                    onSelect={select}
+                  />
+                )}
+                <div className="analysis-controls">
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={aligned}
+                      onChange={(e) => setAligned(e.target.checked)}
+                    />{" "}
+                    Alignment inspected — residual offsets may produce false
+                    changes.
+                  </label>
+                  <details className="advanced">
+                    <summary>Advanced Settings</summary>
+                    <div className="form-grid">
+                      <label>
+                        RGB threshold (0–255)
+                        <input
+                          type="number"
+                          min={0}
+                          max={255}
+                          step={1}
+                          value={threshold}
+                          onChange={(e) => setThreshold(Number(e.target.value))}
+                        />
+                      </label>
+                      <label>
+                        Minimum region (processing pixels)
+                        <input
+                          type="number"
+                          min={1}
+                          max={589824}
+                          step={1}
+                          value={minArea}
+                          onChange={(e) => setMinArea(Number(e.target.value))}
+                        />
+                      </label>
+                    </div>
+                    <p>
+                      3 × 3 mean filter · 4-connected regions · longest
+                      processing edge 768 px. Lower thresholds detect more
+                      differences. Settings apply only when you analyze.
+                    </p>
+                  </details>
+                  {stale && (
+                    <p className="inline-warning">
+                      Settings changed. The existing evidence remains from
+                      threshold {result?.threshold}. Analyze again to apply
+                      these settings.
+                    </p>
+                  )}
+                  <div className="action-row">
+                    <p>No automatic registration or terrain classification.</p>
                     <button
-                      className={tab === "imagery" ? "active" : ""}
-                      onClick={() => setTab("imagery")}
+                      className="primary"
+                      onClick={run}
+                      disabled={
+                        !aligned ||
+                        !!busy ||
+                        !Number.isInteger(threshold) ||
+                        threshold < 0 ||
+                        threshold > 255 ||
+                        !Number.isInteger(minArea) ||
+                        minArea < 1 ||
+                        minArea > 589824
+                      }
                     >
-                      <Layers size={14} />
-                      Imagery
-                    </button>
-                    <button
-                      className={tab === "map" ? "active" : ""}
-                      onClick={() => setTab("map")}
-                    >
-                      <Map size={14} />
-                      Map
+                      <Play size={16} /> Analyze Images
                     </button>
                   </div>
                 </div>
-                {pair ? (
-                  tab === "imagery" ? (
-                    <Viewer
-                      key={pair.scene.id}
-                      pair={pair}
-                      result={result}
-                      reviews={reviews}
-                      selected={selected}
-                      onSelect={select}
-                    />
-                  ) : (
-                    <div className="large-map">
+              </section>
+            )}
+            {step > 1 && result && (
+              <>
+                <AnalysisInsights
+                  pair={pair}
+                  result={result}
+                  stale={stale}
+                  onSelect={select}
+                />
+                <div className="section-heading">
+                  <div>
+                    <h2>Inspect findings</h2>
+                    <p>02 / EVIDENCE WORKSPACE</p>
+                  </div>
+                  <button
+                    className="primary"
+                    onClick={() =>
+                      document
+                        .getElementById("report-section")
+                        ?.scrollIntoView({ block: "start" })
+                    }
+                  >
+                    <FileText size={16} /> Report & export
+                  </button>
+                </div>
+                <div className="inspection-layout">
+                  <div className="panel">
+                    <div className="viewer-toolbar">
+                      <div className="segmented">
+                        <button
+                          className={tab === "imagery" ? "active" : ""}
+                          onClick={() => setTab("imagery")}
+                        >
+                          Imagery
+                        </button>
+                        <button
+                          className={tab === "map" ? "active" : ""}
+                          onClick={() => setTab("map")}
+                        >
+                          Geographic map
+                        </button>
+                      </div>
+                    </div>
+                    {tab === "imagery" ? (
+                      <Viewer
+                        key={pair.scene.id}
+                        pair={pair}
+                        result={result}
+                        reviews={reviews}
+                        selected={selected}
+                        onSelect={select}
+                      />
+                    ) : (
                       <GeoMap
                         pair={pair}
                         result={result}
@@ -655,456 +745,258 @@ export default function App() {
                         selected={selected}
                         onSelect={select}
                       />
-                    </div>
-                  )
-                ) : (
-                  <div className="loading-placeholder">
-                    <Aperture className="spin" size={32} />
-                    <p>{busy || "Select imagery to begin"}</p>
-                    {error && (
-                      <button
-                        className="secondary"
-                        onClick={() => location.reload()}
-                      >
-                        Retry loading
-                      </button>
                     )}
-                  </div>
-                )}
-                {!!busy && pair && (
-                  <div className="processing-bar" role="status">
-                    <RefreshCw size={14} className="spin" />
-                    {busy}…
-                  </div>
-                )}
-                <div className="detection-controls">
-                  <div className="control-title">
-                    <Settings2 size={16} />
-                    <strong>Detection settings</strong>
-                    <span>RGB difference · 4-connected regions</span>
-                  </div>
-                  <div className="control-row">
-                    <label className="range-control">
-                      <span>
-                        Sensitivity <b>{Math.round((90 - threshold) / 0.8)}%</b>
-                      </span>
+                    <div className="observation-tools">
                       <input
-                        aria-label="Detection sensitivity"
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={Math.round((90 - threshold) / 0.8)}
-                        disabled={!!busy || !!feed}
-                        onChange={(e) =>
-                          setThreshold(
-                            Math.round(90 - Number(e.target.value) * 0.8),
-                          )
-                        }
+                        aria-label="Search observations"
+                        placeholder="Search region or category"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
                       />
-                      <small>
-                        Higher sensitivity detects smaller color differences
-                      </small>
-                    </label>
-                    <label className="area-control">
-                      <span>Minimum region</span>
-                      <div>
-                        <input
-                          aria-label="Minimum region area"
-                          type="number"
-                          min="1"
-                          max="100000"
-                          value={minArea}
-                          disabled={!!busy || !!feed}
-                          onChange={(e) =>
-                            setMinArea(
-                              Math.max(
-                                1,
-                                Math.min(100000, Number(e.target.value) || 1),
-                              ),
-                            )
-                          }
-                        />
-                        <span>px</span>
-                      </div>
-                      <small>On the processing grid</small>
-                    </label>
-                    <button
-                      className="primary run-button"
-                      onClick={run}
-                      disabled={!pair || !!busy || !aligned || !!feed}
-                    >
-                      <ScanLine size={17} />
-                      {busy
-                        ? "Processing…"
-                        : result
-                          ? "Run new analysis"
-                          : "Detect changes"}
-                    </button>
-                  </div>
-                  <label className="alignment-check">
-                    <input
-                      type="checkbox"
-                      checked={aligned}
-                      disabled={!!busy || !!feed}
-                      onChange={(e) => setAligned(e.target.checked)}
-                    />
-                    <span>
-                      I inspected stable landmarks in both images and accept the
-                      alignment for visual screening.
-                    </span>
-                  </label>
-                  {stale && (
-                    <div className="inline-warning">
-                      Settings changed.{" "}
-                      {reviewed
-                        ? "Run a new analysis to apply them; current reviews belong to the existing run."
-                        : "Updating preview…"}
+                      <select
+                        aria-label="Review filter"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                      >
+                        <option value="all">All observations</option>
+                        <option value="unreviewed">Unreviewed</option>
+                        <option value="approved">Verified by analyst</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
                     </div>
-                  )}
+                    <div className="observation-list">
+                      {visible.map((r) => (
+                        <button
+                          key={r.id}
+                          className={selected === r.id ? "selected" : ""}
+                          onClick={() => select(r.id)}
+                        >
+                          <strong>Region {r.id}</strong>
+                          <span>{number(r.area)} changed px</span>
+                          <small>
+                            {reviews[r.id]?.status === "approved"
+                              ? "Verified by analyst"
+                              : (reviews[r.id]?.status ?? "Unreviewed")}
+                          </small>
+                        </button>
+                      ))}
+                      {!visible.length && (
+                        <p className="empty-state">
+                          {result.regions.length
+                            ? "No observations match this filter."
+                            : "No regions passed the selected settings. A preliminary report is still available."}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <section className="panel evidence-panel" id="evidence-panel">
+                    <div className="panel-heading">
+                      <h2>Observation details</h2>
+                    </div>
+                    {selectedRegion ? (
+                      <div className="evidence-body">
+                        <div className="evidence-title">
+                          <strong>Region {selectedRegion.id}</strong>
+                          <span>
+                            {review.status === "approved"
+                              ? "Verified by analyst"
+                              : review.status}
+                          </span>
+                        </div>
+                        <Evidence
+                          pair={pair}
+                          result={result}
+                          region={selectedRegion}
+                        />
+                        <dl className="region-stats">
+                          <div>
+                            <dt>Changed pixels</dt>
+                            <dd>{number(selectedRegion.area)}</dd>
+                          </div>
+                          <div>
+                            <dt>Mean RGB difference</dt>
+                            <dd>
+                              {selectedRegion.meanDifference.toFixed(1)} / 255
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Centroid (processing x, y)</dt>
+                            <dd>
+                              {selectedRegion.centroid
+                                .map((n) => n.toFixed(1))
+                                .join(", ")}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Bounds (x0, y0, x1, y1)</dt>
+                            <dd>{selectedRegion.bbox.join(", ")}</dd>
+                          </div>
+                        </dl>
+                        {geo && (
+                          <p className="coordinates">
+                            {geo.lat.toFixed(5)}, {geo.lng.toFixed(5)}{" "}
+                            (latitude, longitude)
+                          </p>
+                        )}
+                        {result.reliability?.regionPersistence[
+                          selectedRegion.id
+                        ] && (
+                          <p className="fineprint">
+                            {
+                              result.reliability.regionPersistence[
+                                selectedRegion.id
+                              ].label
+                            }
+                            . Threshold stability is not accuracy.
+                          </p>
+                        )}
+                        <label>
+                          Analyst interpretation
+                          <select
+                            value={review.category}
+                            onChange={(e) =>
+                              updateReview({ category: e.target.value })
+                            }
+                          >
+                            {!categories.includes(review.category) && (
+                              <option>{review.category}</option>
+                            )}
+                            {categories.map((c) => (
+                              <option key={c} value={c}>
+                                {c === "Unclassified"
+                                  ? "Unclassified observation"
+                                  : c}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          Optional analyst notes
+                          <textarea
+                            value={review.notes}
+                            maxLength={3000}
+                            placeholder="Describe the visible evidence and uncertainty…"
+                            onChange={(e) =>
+                              updateReview({ notes: e.target.value })
+                            }
+                          />
+                        </label>
+                        <div className="review-actions">
+                          <button
+                            aria-pressed={review.status === "approved"}
+                            onClick={() => updateReview({ status: "approved" })}
+                          >
+                            <Check size={15} /> Mark as Verified
+                          </button>
+                          <button
+                            aria-pressed={review.status === "rejected"}
+                            onClick={() => updateReview({ status: "rejected" })}
+                          >
+                            <X size={15} /> Mark as Rejected
+                          </button>
+                          <button
+                            aria-pressed={review.status === "unreviewed"}
+                            onClick={() =>
+                              updateReview({ status: "unreviewed" })
+                            }
+                          >
+                            Leave Unreviewed
+                          </button>
+                        </div>
+                        <p className="fineprint">
+                          Verification records your interpretation; it does not
+                          establish ground truth.
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="empty-state">
+                        Select a region to inspect its evidence.
+                      </p>
+                    )}
+                  </section>
                 </div>
-                <div className="method-note">
-                  <Info size={14} />
-                  <p>
-                    Visual differences are candidates, not confirmed terrain
-                    changes. Clouds, shadows, lighting and residual misalignment
-                    require analyst review.
-                  </p>
-                  <button onClick={() => setSources(true)}>
-                    Method & sources
-                    <ArrowUpRight size={12} />
+              </>
+            )}
+            {step > 1 && result && (
+              <section className="panel report-screen" id="report-section">
+                <FileText size={32} />
+                <h1>Analysis record</h1>
+                <p>03 / REPORT & GEOSPATIAL EXPORT</p>
+                <div className="report-summary">
+                  <span>{result.regions.length} observations</span>
+                  <span>{approved} verified by analyst</span>
+                  <span>{rejected} rejected</span>
+                </div>
+                <p className="fineprint">
+                  Analysis {result.runId} ·{" "}
+                  {new Date(result.createdAt).toLocaleString()}
+                </p>
+                <div className="action-row">
+                  <button
+                    className="primary"
+                    disabled={reportBusy || !!busy}
+                    onClick={() => exportReport()}
+                  >
+                    <FileText size={16} />
+                    {reportBusy ? "Preparing report…" : "Generate Report"}
+                  </button>
+                  <button
+                    className="secondary"
+                    disabled={!hasGeography}
+                    onClick={exportGeoJSON}
+                  >
+                    <Globe2 size={16} /> Export GeoJSON
                   </button>
                 </div>
-              </div>
-              <div className="lower-grid">
-                <section className="panel map-panel">
-                  <div className="panel-heading">
-                    <div>
-                      <span className="panel-index">02</span>
-                      <h2>Observation map</h2>
-                    </div>
-                    <Globe2 size={16} />
-                  </div>
-                  {pair && (
-                    <GeoMap
-                      pair={pair}
-                      result={result}
-                      reviews={reviews}
-                      selected={selected}
-                      onSelect={select}
-                    />
-                  )}
-                </section>
-                <section className="panel activity-panel">
-                  <div className="panel-heading">
-                    <div>
-                      <span className="panel-index">03</span>
-                      <h2>Activity log</h2>
-                    </div>
-                    <Clock3 size={16} />
-                  </div>
-                  <div className="feed-card">
-                    <Radio size={18} />
-                    <div>
-                      <strong>Simulated imagery feed</strong>
-                      <p>
-                        {feed ||
-                          "Replay this prepared scene through the real detector."}
-                      </p>
-                    </div>
-                    <button
-                      className="icon-button"
-                      aria-label="Replay simulated imagery feed"
-                      disabled={!aligned || !!busy || !!feed || !pair}
-                      onClick={replay}
-                    >
-                      <Play size={16} />
-                    </button>
-                  </div>
-                  <div className="timeline">
-                    {events.length ? (
-                      events.slice(0, 4).map((e, i) => (
-                        <div key={i}>
-                          <i />
-                          <time>{e.time}</time>
-                          <span>{e.text}</span>
-                        </div>
-                      ))
-                    ) : (
-                      <p>Analysis actions appear here.</p>
-                    )}
-                  </div>
-                </section>
-              </div>
-            </section>
-            <aside className="review-column">
-              <section className="panel queue-panel">
-                <div className="panel-heading">
-                  <div>
-                    <Focus size={17} />
-                    <h2>Observation queue</h2>
-                    <span className="count-tag">
-                      {result?.regions.length ?? 0}
-                    </span>
-                  </div>
-                </div>
-                <div className="queue-tools">
-                  <div className="queue-filters">
-                    {[
-                      ["all", "All"],
-                      ["unreviewed", "Pending"],
-                      ["approved", "Approved"],
-                      ["rejected", "Rejected"],
-                    ].map(([v, l]) => (
-                      <button
-                        className={filter === v ? "active" : ""}
-                        key={v}
-                        onClick={() => setFilter(v)}
-                      >
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="queue-search">
-                    <Search size={14} />
-                    <input
-                      aria-label="Search observations"
-                      placeholder="Find by region ID or category"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="observation-list">
-                  {visible.length ? (
-                    visible.map((r) => (
-                      <button
-                        key={r.id}
-                        className={
-                          "observation " + (selected === r.id ? "selected" : "")
-                        }
-                        onClick={() => select(r.id)}
-                      >
-                        <span
-                          className={
-                            "observation-icon " +
-                            (reviews[r.id]?.status ?? "unreviewed")
-                          }
-                        >
-                          {reviews[r.id]?.status === "approved" ? (
-                            <Check size={15} />
-                          ) : reviews[r.id]?.status === "rejected" ? (
-                            <X size={15} />
-                          ) : (
-                            <ScanLine size={15} />
-                          )}
-                        </span>
-                        <span>
-                          <strong>
-                            Region {String(r.id).padStart(3, "0")}
-                          </strong>
-                          <small>
-                            {number(r.area)} px <b>·</b>{" "}
-                            {reviews[r.id]?.category ?? "Visual change"}
-                          </small>
-                        </span>
-                        <span className="observation-status">
-                          {reviews[r.id]?.status === "approved"
-                            ? "APPROVED"
-                            : reviews[r.id]?.status === "rejected"
-                              ? "REJECTED"
-                              : "REVIEW"}
-                          <ChevronRight size={12} />
-                        </span>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="queue-empty">
-                      <ScanLine size={27} />
-                      <strong>
-                        {result
-                          ? "No matching observations"
-                          : "Ready for a closer look"}
-                      </strong>
-                      <p>
-                        {result
-                          ? "Adjust the filter or detection settings."
-                          : "Inspect alignment, then detect changes to populate this queue."}
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <div className="queue-summary">
-                  <span>
-                    <i className="legend-dot green" />
-                    {approved} approved
-                  </span>
-                  <span>
-                    <i className="legend-dot muted" />
-                    {rejected} rejected
-                  </span>
-                  <span>
-                    {(result?.regions.length ?? 0) - approved - rejected}{" "}
-                    pending
-                  </span>
-                </div>
-              </section>
-              <section className="panel evidence-panel" id="evidence-panel">
-                <div className="panel-heading">
-                  <div>
-                    <span className="panel-index">04</span>
-                    <h2>Evidence & review</h2>
-                  </div>
-                  <ShieldCheck size={16} />
-                </div>
-                {pair && result && selectedRegion ? (
-                  <div className="evidence-body">
-                    <div className="evidence-title">
-                      <strong>
-                        OBS-{String(selectedRegion.id).padStart(3, "0")}
-                      </strong>
-                      <span className={"status-label " + review.status}>
-                        {review.status}
-                      </span>
-                    </div>
-                    <Evidence
-                      pair={pair}
-                      result={result}
-                      region={selectedRegion}
-                    />
-                    <div className="evidence-metrics">
-                      <div>
-                        <span>CHANGED PIXELS</span>
-                        <strong>{number(selectedRegion.area)} px</strong>
-                      </div>
-                      <div>
-                        <span>IMAGE CENTROID</span>
-                        <strong>
-                          {selectedRegion.centroid
-                            .map((n) => n.toFixed(0))
-                            .join(", ")}
-                        </strong>
-                      </div>
-                    </div>
-                    {geo && (
-                      <div className="coordinates">
-                        <Globe2 size={13} />
-                        {geo.lat.toFixed(4)}° N · {geo.lng.toFixed(4)}° E
-                        <span>WGS 84</span>
-                      </div>
-                    )}
-                    <label className="field-label">
-                      Analyst interpretation
-                      <select
-                        value={review.category}
-                        onChange={(e) =>
-                          updateReview({ category: e.target.value })
-                        }
-                      >
-                        {[
-                          "Unclassified",
-                          "Water extent change",
-                          "Vegetation change",
-                          "Terrain / surface change",
-                          "Infrastructure change",
-                          "Cloud / shadow artifact",
-                          "Alignment artifact",
-                          "Other visual change",
-                        ].map((v) => (
-                          <option key={v}>{v}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="field-label">
-                      Evidence notes
-                      <textarea
-                        value={review.notes}
-                        maxLength={3000}
-                        placeholder="Describe what you can observe and any uncertainty…"
-                        onChange={(e) =>
-                          updateReview({ notes: e.target.value })
-                        }
-                      />
-                    </label>
-                    <div className="review-actions">
-                      <button
-                        className={
-                          "approve " +
-                          (review.status === "approved" ? "is-active" : "")
-                        }
-                        onClick={() => updateReview({ status: "approved" })}
-                      >
-                        <Check size={16} />
-                        Approve
-                      </button>
-                      <button
-                        className={
-                          "reject " +
-                          (review.status === "rejected" ? "is-active" : "")
-                        }
-                        onClick={() => updateReview({ status: "rejected" })}
-                      >
-                        <X size={16} />
-                        Reject
-                      </button>
-                      <button
-                        className="icon-button"
-                        title="Reset review status"
-                        aria-label="Reset review status"
-                        onClick={() => updateReview({ status: "unreviewed" })}
-                      >
-                        <RefreshCw size={14} />
-                      </button>
-                    </div>
-                    <p className="fineprint">
-                      Approval records your interpretation. It does not
-                      establish ground truth.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="evidence-empty">
-                    <Focus size={25} />
-                    <p>
-                      Select a detected region to inspect its before-and-after
-                      evidence.
-                    </p>
-                  </div>
+                {!hasGeography && (
+                  <p className="fineprint">
+                    Geographic export is unavailable without valid geographic
+                    bounds. The report includes image-space measurements.
+                  </p>
                 )}
               </section>
-              <div className="report-card">
-                <div className="report-icon">
-                  <FileText size={21} />
-                </div>
-                <div>
-                  <strong>Your findings. A clear record.</strong>
-                  <p>
-                    Export imagery, reviews, mapped observations and detection
-                    settings.
-                  </p>
-                </div>
-                <button
-                  aria-label="Download HTML evidence report"
-                  disabled={!result || reportBusy}
-                  onClick={() => exportReport(true)}
-                >
-                  <Download size={18} />
-                </button>
-              </div>
-            </aside>
-          </div>
-          <footer className="app-footer">
-            <span>
-              <Aperture size={14} /> TERRALENS <b>/</b> Evidence-led geospatial
-              analysis
-            </span>
-            <span>
-              <Save size={12} />
-              {saved}
-              <i />
-              All image processing stays in your browser
-            </span>
-          </footer>
-        </main>
-      </div>
+            )}
+            <details className="source-details">
+              <summary>
+                <Info size={15} /> Sources & methodology
+              </summary>
+              <p>{pair.scene.description}</p>
+              <p>{pair.scene.alignment}</p>
+              <p>{pair.scene.attribution}</p>
+              <ul>
+                {pair.scene.caveats.map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+              <p>
+                Local RGB difference after spatial averaging, threshold
+                segmentation and four-connected region extraction. Nearby
+                thresholds measure persistence; they do not measure accuracy. No
+                automatic cloud detection, registration or classification is
+                applied.
+              </p>
+              {pair.scene.files.map((f) => (
+                <p key={f.file}>
+                  {f.sourceUrl ? (
+                    <a href={f.sourceUrl} target="_blank" rel="noreferrer">
+                      {f.file} — source imagery <ArrowUpRight size={12} />
+                    </a>
+                  ) : (
+                    f.file
+                  )}
+                </p>
+              ))}
+            </details>
+          </>
+        )}
+        <footer className="app-footer">
+          <span>Unclassified demonstration · Analyst assistance prototype</span>
+          <span>
+            <Save size={13} />
+            {saved}
+          </span>
+        </footer>
+      </main>
       {confirmation && (
         <div className="modal-backdrop">
           <section
@@ -1113,15 +1005,10 @@ export default function App() {
             aria-modal="true"
             aria-labelledby="replace-title"
           >
-            <header>
-              <div>
-                <span className="eyebrow">PRESERVE YOUR EVIDENCE</span>
-                <h2 id="replace-title">Start a fresh analysis?</h2>
-              </div>
-            </header>
+            <h2 id="replace-title">Replace the current analysis?</h2>
             <p>
-              This replaces the current detections, notes and review decisions.
-              Download the current report first if you need to retain a record.
+              This removes the current detections, notes and review decisions.
+              Export a report first if you need to retain them.
             </p>
             <footer>
               <button
@@ -1138,7 +1025,7 @@ export default function App() {
                   action();
                 }}
               >
-                Start fresh analysis
+                Replace analysis
               </button>
             </footer>
           </section>
@@ -1150,22 +1037,40 @@ export default function App() {
             className="report-modal"
             role="dialog"
             aria-modal="true"
-            aria-label="Evidence report preview"
+            aria-label="Report preview"
           >
             <header>
-              <strong>
-                <FileText size={17} /> Evidence report
-              </strong>
+              <strong>Analysis report</strong>
               <div>
                 <button
                   className="secondary"
-                  onClick={() => exportReport(true)}
+                  onClick={() => {
+                    const url = URL.createObjectURL(
+                      new Blob([reportContent], { type: "text/html" }),
+                    );
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "TerraLens-analysis-report.html";
+                    a.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
+                  }}
                 >
                   <Download size={14} /> Download HTML
                 </button>
                 <button
-                  className="icon-button"
-                  aria-label="Close report preview"
+                  className="secondary"
+                  onClick={() => {
+                    const frame = document.getElementById(
+                      "report-preview",
+                    ) as HTMLIFrameElement;
+                    frame.contentWindow?.focus();
+                    frame.contentWindow?.print();
+                  }}
+                >
+                  Print / Save as PDF
+                </button>
+                <button
+                  aria-label="Close report"
                   onClick={() => setReportContent("")}
                 >
                   <X size={20} />
@@ -1173,114 +1078,10 @@ export default function App() {
               </div>
             </header>
             <iframe
-              title="TerraLens printable evidence report"
+              id="report-preview"
+              title="TerraLens printable analysis report"
               srcDoc={reportContent}
             />
-          </section>
-        </div>
-      )}
-      {upload && (
-        <UploadDialog
-          onClose={() => setUpload(false)}
-          onLoad={(p) => {
-            setUpload(false);
-            replaceReviewed(() => {
-              cancelProcessing();
-              setPair(p);
-              setTitle(p.scene.title);
-              setResult(null);
-              setReviews({});
-              setSelected(null);
-              setAligned(false);
-              setThreshold(35);
-              setMinArea(100);
-              setUpload(false);
-              setTab("imagery");
-              log("Uploaded compatible image pair");
-            });
-          }}
-        />
-      )}
-      {sources && (
-        <div className="modal-backdrop" onClick={() => setSources(false)}>
-          <section
-            className="modal sources-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="sources-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <header>
-              <div>
-                <span className="eyebrow">TRANSPARENCY & PROVENANCE</span>
-                <h2 id="sources-title">Evidence you can trace</h2>
-              </div>
-              <button
-                className="icon-button"
-                aria-label="Close sources"
-                onClick={() => setSources(false)}
-              >
-                <X size={20} />
-              </button>
-            </header>
-            <h3>Detection method</h3>
-            <p>
-              Images are compared on a common processing grid, capped at 768
-              pixels on the longest edge. A 3 × 3 mean filter reduces pixel
-              noise. Mean absolute RGB differences are thresholded, grouped by
-              four-connected neighbors, and filtered by changed-pixel count.
-            </p>
-            <p>
-              No automatic cloud removal, image registration, semantic
-              classification or accuracy score is applied. Sensitivity changes
-              the numeric RGB threshold; it is not confidence. Geographic area
-              is not estimated.
-            </p>
-            <h3>{pair?.scene.title}</h3>
-            <p>{pair?.scene.description}</p>
-            <p>
-              <strong>Alignment:</strong> {pair?.scene.alignment}
-            </p>
-            <ul>
-              {pair?.scene.caveats.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-            <p>
-              <strong>Geography:</strong>{" "}
-              {pair?.scene.bbox
-                ? `North-up EPSG:4326 bounds [${pair.scene.bbox.join(", ")}]. Pixel centers are linearly interpolated on this geographic grid. Source geolocation has not been independently surveyed.`
-                : "No geographic extent supplied."}
-            </p>
-            <p>{pair?.scene.attribution}</p>
-            <div className="source-links">
-              {pair?.scene.article && (
-                <a href={pair.scene.article} target="_blank" rel="noreferrer">
-                  NASA event context
-                  <ArrowUpRight size={14} />
-                </a>
-              )}
-              <a href="/imagery/manifest.json" target="_blank" rel="noreferrer">
-                Full source manifest
-                <ArrowUpRight size={14} />
-              </a>
-              <a
-                href="/imagery/crop-candidates.json"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Crop provenance
-                <ArrowUpRight size={14} />
-              </a>
-            </div>
-            <h3>Offline & privacy</h3>
-            <p>
-              Processing and saved reviews stay in this browser. The production
-              application caches its assets and prepared imagery after the first
-              successful online visit. Maps use bundled imagery. Source links
-              require internet access. Browser storage can be cleared or
-              evicted; download a report to keep a separate record.
-            </p>
           </section>
         </div>
       )}

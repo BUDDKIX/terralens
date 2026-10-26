@@ -1,0 +1,41 @@
+{
+  "id": "lake-mead-holdout",
+  "title": "Lake Mead independent comparison",
+  "location": "Lake Mead region, United States",
+  "dates": [
+    "2010-07-01",
+    "2022-07-01"
+  ],
+  "bbox": [
+    -115.1,
+    35.9,
+    -114.4,
+    36.6
+  ],
+  "sensor": "Terra / MODIS",
+  "color": "Natural color",
+  "attribution": "NASA GIBS / ESDIS, Terra / MODIS",
+  "alignment": "Identical requested EPSG:4326 bounds and dimensions. No independent registration verification.",
+  "description": "Additional real image pair used only for validation after implementation; not used to tune threshold settings.",
+  "caveats": [
+    "Public browse imagery; seasonal and atmospheric variations can affect visual differences.",
+    "This is not labeled ground truth for accuracy measurement."
+  ],
+  "files": [
+    {
+      "file": "lake-mead-2010-07-01.png",
+      "date": "2010-07-01",
+      "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image%2Fpng&TRANSPARENT=FALSE&SRS=EPSG%3A4326&BBOX=-115.1%2C35.9%2C-114.4%2C36.6&WIDTH=512&HEIGHT=512&TIME=2010-07-01",
+      "sha256": "c18e0403a6f074a84ee4a7514f9319c3c862926dd06fa5410257d2e8c7a39407",
+      "bytes": 159772
+    },
+    {
+      "file": "lake-mead-2022-07-01.png",
+      "date": "2022-07-01",
+      "sourceUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&FORMAT=image%2Fpng&TRANSPARENT=FALSE&SRS=EPSG%3A4326&BBOX=-115.1%2C35.9%2C-114.4%2C36.6&WIDTH=512&HEIGHT=512&TIME=2022-07-01",
+      "sha256": "e73cfe44835075e9f534c7acf39052a0168bc2dc430becbbc067cf3872fc2f1c",
+      "bytes": 234526
+    }
+  ],
+  "licenseUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy"
+}

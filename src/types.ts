@@ -12,10 +12,21 @@ export type Review = {
   notes: string;
 };
 export type Result = {
+  // Optional for analyses saved before automated findings were introduced.
+  findings?: ReturnType<typeof import("./findings.mjs").createFindings>;
+  reliability?: ReturnType<typeof import("./reliability.mjs").auditThresholds>;
+  quality?: ReturnType<typeof import("./quality.mjs").assessQuality>;
+  timing?: {
+    detectorMs: number;
+    auditMs: number;
+    totalMs: number;
+    qualityMs?: number;
+  };
   width: number;
   height: number;
   threshold: number;
   minArea: number;
+  smoothingRadius?: number;
   regions: Region[];
   labels: Int32Array;
   validPixels: number;

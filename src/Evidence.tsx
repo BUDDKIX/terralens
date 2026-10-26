@@ -11,21 +11,28 @@ export default function Evidence({
   region: Region;
 }) {
   const [crops, setCrops] = useState<string[]>([]);
+  const [error, setError] = useState("");
   useEffect(() => {
     let active = true;
     setCrops([]);
+    setError("");
     Promise.all([
       cropData(pair.before, region, result),
       cropData(pair.after, region, result),
-    ]).then((v) => {
-      if (active) setCrops(v);
-    });
+    ])
+      .then((v) => {
+        if (active) setCrops(v);
+      })
+      .catch(() => {
+        if (active) setError("Evidence crops could not be decoded.");
+      });
     return () => {
       active = false;
     };
   }, [pair, result, region]);
   return (
     <div className="evidence-crops">
+      {error && <p role="alert">{error}</p>}
       {["Before", "After"].map((label, i) => (
         <figure key={label}>
           {crops[i] ? (

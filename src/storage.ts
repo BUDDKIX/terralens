@@ -37,3 +37,18 @@ export async function loadAnalysis(): Promise<Saved | null> {
     db.close();
   }
 }
+
+export async function clearAnalysis() {
+  const db = await database();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction("analyses", "readwrite");
+      tx.objectStore("analyses").delete("current");
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+  } finally {
+    db.close();
+  }
+}

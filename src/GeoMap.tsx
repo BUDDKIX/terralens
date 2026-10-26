@@ -23,7 +23,12 @@ export default function GeoMap({
     click = useRef(onSelect);
   click.current = onSelect;
   useEffect(() => {
-    if (!el.current || !pair.scene.bbox) return;
+    if (
+      !el.current ||
+      !pair.scene.bbox ||
+      !pixelToGeo(0, 0, pair.width, pair.height, pair.scene.bbox)
+    )
+      return;
     const [west, south, east, north] = pair.scene.bbox;
     const m = L.map(el.current, {
       crs: L.CRS.EPSG4326,
@@ -40,7 +45,20 @@ export default function GeoMap({
     L.imageOverlay(pair.after, bounds).addTo(m);
     L.rectangle(bounds, { color: "#b8c99b", weight: 1, fill: false }).addTo(m);
     m.fitBounds(bounds);
-    m.attributionControl.addAttribution("NASA GIBS · EPSG:4326");
+    // Match the scene provenance; user uploads must not inherit NASA credit.
+    // addAttribution accepts HTML, so encode metadata before passing it to Leaflet.
+    const attribution = pair.scene.attribution.replace(
+      /[&<>"']/g,
+      (character) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[character]!,
+    );
+    m.attributionControl.addAttribution(`${attribution} · EPSG:4326`);
     markers.current = L.layerGroup().addTo(m);
     const observer = new ResizeObserver(() => {
       m.invalidateSize();
@@ -84,13 +102,16 @@ export default function GeoMap({
       marker.on("click", () => click.current(r.id));
     }
   }, [result, reviews, selected, pair]);
-  if (!pair.scene.bbox)
+  if (
+    !pair.scene.bbox ||
+    !pixelToGeo(0, 0, pair.width, pair.height, pair.scene.bbox)
+  )
     return (
       <div className="map-unavailable">
         <MapPinOff size={25} />
         <strong>Geography unavailable</strong>
         <p>
-          This upload has no supplied geographic bounds. Findings use image
+          Valid geographic bounds are unavailable. Findings use image
           coordinates.
         </p>
       </div>

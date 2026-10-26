@@ -1,5 +1,5 @@
 /** Deterministic RGB change detector shared by the worker and validation tests. */
-export function detectChanges(before, after, width, height, options = {}) {
+export function prepareDifference(before, after, width, height, options = {}) {
   const start = performance.now();
   const threshold = options.threshold ?? 35;
   const minArea = options.minArea ?? 80;
@@ -25,8 +25,7 @@ export function detectChanges(before, after, width, height, options = {}) {
   )
     throw new Error("Invalid detection settings.");
   const valid = new Uint8Array(n),
-    score = new Uint8Array(n),
-    binary = new Uint8Array(n);
+    score = new Uint8Array(n);
   let validPixels = 0;
   for (let p = 0; p < n; p++) {
     const i = p * 4;
@@ -66,8 +65,36 @@ export function detectChanges(before, after, width, height, options = {}) {
       score[p] = Math.round(
         (Math.abs(r) + Math.abs(g) + Math.abs(b)) / (3 * count),
       );
-      binary[p] = score[p] > threshold ? 1 : 0;
     }
+  return {
+    width,
+    height,
+    valid,
+    score,
+    validPixels,
+    smoothingRadius: blur ? 1 : 0,
+    preparationMs: performance.now() - start,
+  };
+}
+
+/** Segment a cached difference score field. Uses the same region algorithm at each threshold. */
+export function segmentChanges(prepared, options = {}) {
+  const start = performance.now();
+  const { width, height, valid, score, validPixels } = prepared;
+  const threshold = options.threshold ?? 35,
+    minArea = options.minArea ?? 80;
+  if (
+    !Number.isFinite(threshold) ||
+    threshold < 0 ||
+    threshold > 255 ||
+    !Number.isFinite(minArea) ||
+    minArea < 1
+  )
+    throw new Error("Invalid detection settings.");
+  const n = width * height,
+    binary = new Uint8Array(n);
+  for (let p = 0; p < n; p++)
+    binary[p] = valid[p] && score[p] > threshold ? 1 : 0;
   const labels = new Int32Array(n),
     queue = new Int32Array(n),
     visited = new Uint8Array(n);
@@ -127,6 +154,7 @@ export function detectChanges(before, after, width, height, options = {}) {
     height,
     threshold,
     minArea,
+    smoothingRadius: prepared.smoothingRadius,
     regions,
     labels,
     validPixels,
@@ -136,9 +164,23 @@ export function detectChanges(before, after, width, height, options = {}) {
   };
 }
 
+export function detectChanges(before, after, width, height, options = {}) {
+  const prepared = prepareDifference(before, after, width, height, options);
+  const result = segmentChanges(prepared, options);
+  result.processingMs += prepared.preparationMs;
+  return result;
+}
+
 /** Pixel centers in a north-up EPSG:4326 raster. Bounds are [west,south,east,north]. */
 export function pixelToGeo(x, y, width, height, bounds) {
-  if (!bounds || bounds.length !== 4 || !bounds.every(Number.isFinite))
+  if (
+    ![x, y, width, height].every(Number.isFinite) ||
+    width <= 0 ||
+    height <= 0 ||
+    !bounds ||
+    bounds.length !== 4 ||
+    !bounds.every(Number.isFinite)
+  )
     return null;
   const [west, south, east, north] = bounds;
   if (

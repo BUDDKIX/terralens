@@ -40,6 +40,7 @@ test("report uses real review values and escapes user content", () => {
     evidence: [],
     generatedAt: "now",
   });
+  assert.ok(html.includes("TERRALENS — GEOSPATIAL CHANGE ASSESSMENT"));
   assert.ok(html.includes("1 approved"));
   assert.ok(html.includes("OBS-007"));
   assert.ok(html.includes("test-run"));

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Upload, X, ArrowUpRight } from "lucide-react";
 import { fileData, validatePair } from "./images";
 import { pixelToGeo } from "./engine.mjs";
@@ -6,7 +6,9 @@ import type { Pair, Bounds } from "./types";
 export default function UploadDialog({
   onClose,
   onLoad,
+  inline = false,
 }: {
+  inline?: boolean;
   onClose: () => void;
   onLoad: (p: Pair) => void;
 }) {
@@ -18,6 +20,13 @@ export default function UploadDialog({
     [geo, setGeo] = useState(false),
     [bounds, setBounds] = useState(["", "", "", ""]),
     [dates, setDates] = useState(["", ""]);
+  const active = useRef(true);
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+    };
+  }, []);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!before || !after) return;
@@ -26,6 +35,7 @@ export default function UploadDialog({
     try {
       const [a, b] = await Promise.all([fileData(before), fileData(after)]);
       const dimensions = await validatePair(a, b);
+      if (!active.current) return;
       let bbox: Bounds | null = null;
       if (geo) {
         if (bounds.some((v) => !v.trim()))
@@ -62,17 +72,21 @@ export default function UploadDialog({
         },
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed");
+      if (active.current)
+        setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
-      setBusy(false);
+      if (active.current) setBusy(false);
     }
   }
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div
+      className={inline ? "inline-upload" : "modal-backdrop"}
+      onClick={inline ? undefined : onClose}
+    >
       <section
         className="modal"
-        role="dialog"
-        aria-modal="true"
+        role={inline ? undefined : "dialog"}
+        aria-modal={inline ? undefined : true}
         aria-labelledby="upload-title"
         onClick={(e) => e.stopPropagation()}
       >
@@ -82,6 +96,7 @@ export default function UploadDialog({
             <h2 id="upload-title">Bring your own imagery</h2>
           </div>
           <button
+            hidden={inline}
             className="icon-button"
             aria-label="Close upload"
             onClick={onClose}
@@ -90,8 +105,8 @@ export default function UploadDialog({
           </button>
         </header>
         <p>
-          Use two PNG or JPEG images of the same area, aligned to the same pixel
-          grid. Maximum 15 MB each and 20 megapixels.
+          Use two PNG, JPEG or WebP images of the same area, aligned to the same
+          pixel grid. Maximum 15 MB each and 20 megapixels.
         </p>
         <form onSubmit={submit}>
           <label>
@@ -105,17 +120,32 @@ export default function UploadDialog({
           </label>
           <div className="form-grid">
             {["Before image", "After image"].map((s, i) => (
-              <label className="file-field" key={s}>
+              <label
+                className="file-field"
+                key={s}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "copy";
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (!busy)
+                    (i === 0 ? setBefore : setAfter)(
+                      e.dataTransfer.files[0] ?? null,
+                    );
+                }}
+              >
                 <Upload size={20} />
                 <strong>{s}</strong>
                 <span>
-                  {(i === 0 ? before : after)?.name || "Choose PNG / JPEG"}
+                  {(i === 0 ? before : after)?.name ||
+                    "Drop or choose PNG / JPEG / WebP"}
                 </span>
                 <input
                   aria-label={s}
+                  disabled={busy}
                   type="file"
-                  accept="image/png,image/jpeg"
-                  required
+                  accept="image/png,image/jpeg,image/webp"
                   onChange={(e) =>
                     (i === 0 ? setBefore : setAfter)(
                       e.target.files?.[0] ?? null,
@@ -181,7 +211,12 @@ export default function UploadDialog({
             </div>
           )}
           <footer>
-            <button type="button" className="secondary" onClick={onClose}>
+            <button
+              type="button"
+              hidden={inline}
+              className="secondary"
+              onClick={onClose}
+            >
               Cancel
             </button>
             <button className="primary" disabled={busy || !before || !after}>

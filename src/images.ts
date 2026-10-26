@@ -4,13 +4,15 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
     const i = new Image();
     i.onload = () => resolve(i);
     i.onerror = () =>
-      reject(new Error("The image could not be decoded. Use PNG or JPEG."));
+      reject(
+        new Error("The image could not be decoded. Use PNG, JPEG or WebP."),
+      );
     i.src = src;
   });
 }
 export async function fileData(file: File): Promise<string> {
-  if (!["image/png", "image/jpeg"].includes(file.type))
-    throw new Error("Please select a PNG or JPEG image.");
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
+    throw new Error("Please select a PNG, JPEG or WebP image.");
   if (file.size > 15 * 1024 * 1024)
     throw new Error("Each upload must be smaller than 15 MB.");
   return new Promise((resolve, reject) => {
@@ -71,8 +73,12 @@ export function maskData(result: Result) {
   ctx.putImageData(data, 0, 0);
   return c.toDataURL();
 }
-export async function cropData(src: string, r: Region, result: Result) {
-  const image = await loadImage(src),
+export async function cropData(
+  src: string | HTMLImageElement,
+  r: Region,
+  result: Result,
+) {
+  const image = typeof src === "string" ? await loadImage(src) : src,
     [x0, y0, x1, y1] = r.bbox;
   const margin = 12;
   const left = Math.max(0, x0 - margin),
