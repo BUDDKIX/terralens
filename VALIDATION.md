@@ -1,8 +1,30 @@
-# Latest upgrade
+# Validation records
 
-The final intelligence/reliability upgrade has 27 passing tests and a passing production build. See [the measured upgrade record](validation/UPGRADE-VALIDATION.md) for current scenario results, performance and browser verification limits. The historical checks below refer to the earlier prototype and do not certify the new panels.
+Latest recorded checks: **39 tests passed, 0 failed**, TypeScript compilation and production build passed, and the offline asset harness passed. These results describe prototype behavior, not detection accuracy.
 
-# TerraLens validation record
+- [Minimal release polish](validation/MINIMAL-POLISH.md): latest browser viewport, crop and report-image checks; PDF printing remains unverified.
+- [Final engineering pass](validation/FINAL-VALIDATION.md): historical 38-test checkpoint and measured scenario results.
+- [Earlier release](validation/RELEASE-REPORT.md): historical 32-test checkpoint and earlier browser workflow checks.
+- [Reliability upgrade](validation/UPGRADE-VALIDATION.md): historical 27-test checkpoint and numerical validation.
+
+Generated browser reports, screenshots and raw RGBA overlays are local artifacts excluded from the submission tree. Recorded JSON measurements, source imagery and provenance remain included. Older records refer to the interface and fixtures present at the time; they do not certify subsequent changes.
+
+## Repeating the core checks
+
+Use Node.js 24 and install the locked dependencies:
+
+```sh
+npm ci
+npm run test
+npm run build
+node scripts/check-offline.mjs
+npm run preview
+```
+
+The browser rehearsal is Load → Analyze → Inspect → Optional review → Generate Report → Export. Check print-to-PDF and internet-disconnected reload with the localhost server running. Unit tests and the service-worker harness do not establish these browser behaviors.
+
+## Historical initial validation
+
 
 Date: 2026-10-25. These are prototype checks, not a claim of operational detection accuracy.
 
@@ -10,11 +32,11 @@ Date: 2026-10-25. These are prototype checks, not a claim of operational detecti
 
 Two real NASA GIBS before/after pairs were downloaded with identical geographic bounds, dimensions, and projection within each pair. Stable terrain was visually inspected. Aral Sea imagery showed a strong basin-scale visual transition. Pakistan false-color imagery showed extensive visual change but also clouds and radiometric differences; an exact crop excludes the densest cloud band without changing image content.
 
-Initial validation ran the same `detectChanges` engine used by the browser. At 768 × 768, threshold 35, and minimum area 100, the PNG-based Aral trial produced 35 regions and 19.2513% visual difference coverage. The exact shipped JPEG/browser-decoded pair produced 36 regions and approximately 19.3%. This small difference reflects image encoding/resampling and is not an accuracy estimate.
+Initial validation ran the same `detectChanges` engine used by the browser. At 768 Ã— 768, threshold 35, and minimum area 100, the PNG-based Aral trial produced 35 regions and 19.2513% visual difference coverage. The exact shipped JPEG/browser-decoded pair produced 36 regions and approximately 19.3%. This small difference reflects image encoding/resampling and is not an accuracy estimate.
 
-The shipped 325 × 325 Pakistan crop at threshold 45 and minimum area 35 produced 26 regions and 55.3335% visual difference coverage in both the direct engine check and browser. Broad differences are explicitly not interpreted as confirmed flooding. The largest components overlap visibly changed areas; no independent ground-truth segmentation was available.
+The shipped 325 Ã— 325 Pakistan crop at threshold 45 and minimum area 35 produced 26 regions and 55.3335% visual difference coverage in both the direct engine check and browser. Broad differences are explicitly not interpreted as confirmed flooding. The largest components overlap visibly changed areas; no independent ground-truth segmentation was available.
 
-Measured individual browser detector runs included approximately 90–137 ms for Aral and 65–120 ms for Pakistan on the QA device. These are observations, not a performance guarantee. The application displays each actual run's time.
+Measured individual browser detector runs included approximately 90â€“137 ms for Aral and 65â€“120 ms for Pakistan on the QA device. These are observations, not a performance guarantee. The application displays each actual run's time.
 
 ## Automated checks
 
@@ -45,9 +67,9 @@ Storage tests use fake-indexeddb; real browser persistence was separately checke
 - Simulated replay displays acquisition states and generates a new actual result.
 - Report preview contains current counts, source images, mask, reviewed crops, notes, geographic markers, settings and limitations.
 - HTML report downloads successfully with embedded image data. Browser Save as PDF is exposed through print styles; a saved PDF was not independently inspected in QA.
-- Mismatched uploads (1000 × 1000 versus 325 × 325) are rejected.
+- Mismatched uploads (1000 Ã— 1000 versus 325 Ã— 325) are rejected.
 - Uploading the same image twice produces zero candidate regions and no geographic location.
-- Mobile layout checked at a 390 × 844 viewport; no horizontal document overflow was found.
+- Mobile layout checked at a 390 Ã— 844 viewport; no horizontal document overflow was found.
 - With the local HTTP server stopped, switching from an uploaded pair to the cached Aral scene and running a new detection succeeded.
 - Reload and full page navigation through the embedded-browser automation returned a blank page while the server was stopped. The cause was not established. Offline refresh is not claimed as verified; keep the local server running for the presentation.
 

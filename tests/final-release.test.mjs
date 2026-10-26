@@ -22,7 +22,7 @@ test('source links reject script URLs and credentials but preserve public HTTP s
 });
 test('dense reports limit primary evidence to largest five and retain all actual observations in appendix',()=>{
  const regions=Array.from({length:175},(_,i)=>({id:i+1,area:i+1,centroid:[i,10],bbox:[i,9,i+1,11],meanDifference:40}));
- const html=reportHTML({title:'Dense fixture',scene:{dates:['2000-06-16','2024-06-26'],files:[{file:'before.jpg',sourceUrl:'javascript:alert(1)'},{file:'after.jpg',sourceUrl:'https://example.org/after'}],bbox:null,caveats:[],sourceOrganization:'Test source',metadataOrigin:'user'},result:{regions,changedPercent:34,processingMs:1,width:200,height:100,threshold:35,minArea:1,runId:'dense',createdAt:'now',smoothingRadius:0},reviews:{175:{status:'approved',category:'Visual change',notes:'Current note'},999:{status:'approved',notes:'STALE REVIEW'}},before:'data:before',after:'data:after',overlay:'data:mask',evidence:[...regions.map(r=>({id:r.id,before:`data:crop-before-${r.id}`,after:`data:crop-after-${r.id}`})),{id:999,before:'STALE CROP',after:'STALE CROP'}],generatedAt:'now'});
+ const html=reportHTML({title:'Dense fixture',scene:{dates:['2000-06-16','2024-06-26'],files:[{file:'before.jpg',sourceUrl:'javascript:alert(1)'},{file:'after.jpg',sourceUrl:'https://example.org/after'}],bbox:null,caveats:[],sourceOrganization:'Test source',attribution:'Authorized source credit & imagery',metadataOrigin:'user'},result:{regions,changedPercent:34,processingMs:1,width:200,height:100,threshold:35,minArea:1,runId:'dense',createdAt:'now',smoothingRadius:0},reviews:{175:{status:'approved',category:'Visual change',notes:'Current note'},999:{status:'approved',notes:'STALE REVIEW'}},before:'data:before',after:'data:after',overlay:'data:mask',evidence:[...regions.map(r=>({id:r.id,before:`data:crop-before-${r.id}`,after:`data:crop-after-${r.id}`})),{id:999,before:'STALE CROP',after:'STALE CROP'}],generatedAt:'now'});
  assert.equal((html.match(/class="evidence"/g)||[]).length,5);
  assert.ok(html.includes('data:crop-before-175'));
  assert.ok(!html.includes('data:crop-before-170"'));
@@ -32,6 +32,7 @@ test('dense reports limit primary evidence to largest five and retain all actual
  assert.ok(!html.includes('STALE'));
  assert.ok(!html.includes('javascript:'));
  assert.ok(html.includes('Test source'));
+ assert.ok(html.includes('Authorized source credit &amp; imagery'));
  assert.ok(html.includes('User-provided metadata'));
  assert.ok(html.includes('Unsmoothed RGB'));
  assert.ok(html.includes('Print full register'));
@@ -81,4 +82,20 @@ test('complete report export reuses decoded sources, embeds five paired crops an
   });
   await assert.rejects(createReport('Broken',{...pair,after:'broken'},result,{}),/decoded/);
  }finally{delete globalThis.Image;delete globalThis.document;}
+});
+
+test('crops retain native detail, cap output size and preserve the exact source footprint',async()=>{
+ let canvas,drawn;
+ globalThis.document={createElement:()=>canvas={width:0,height:0,getContext:()=>({drawImage:(...args)=>{drawn=args}}),toDataURL:()=> 'data:image/jpeg;base64,test'}};
+ try {
+  const source={naturalWidth:1600,naturalHeight:800,width:400,height:200};
+  await cropData(source,{bbox:[20,30,40,50]},{width:200,height:100});
+  assert.deepEqual(drawn.slice(1,5),[64,144,352,352]);
+  assert.deepEqual([canvas.width,canvas.height],[352,352]);
+  await cropData(source,{bbox:[0,0,200,100]},{width:200,height:100});
+  assert.deepEqual(drawn.slice(1,5),[0,0,1600,800]);
+  assert.deepEqual([canvas.width,canvas.height],[680,340]);
+  await cropData({width:200,height:100},{bbox:[0,0,20,10]},{width:200,height:100});
+  assert.deepEqual([canvas.width,canvas.height],[32,22]);
+ } finally {delete globalThis.document;}
 });

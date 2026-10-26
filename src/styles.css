@@ -1842,3 +1842,40 @@ input[type="checkbox"] {
     gap: 10px;
   }
 }
+
+/* Allow the existing inspection columns and review controls to shrink safely. */
+.inspection-layout > * {
+  min-width: 0;
+}
+.evidence-panel {
+  min-width: 0;
+  max-width: 100%;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
+.evidence-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.evidence-title {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.evidence-panel .region-stats,
+.evidence-panel .evidence-crops {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.evidence-panel select,
+.evidence-panel textarea,
+.evidence-panel .review-actions button {
+  max-width: 100%;
+  min-width: 0;
+}
+@media (max-width: 1050px) {
+  .inspection-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .evidence-panel {
+    max-height: none;
+  }
+}

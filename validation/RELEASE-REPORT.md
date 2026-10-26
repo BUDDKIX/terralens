@@ -1,10 +1,12 @@
 # TerraLens final release verification
 
+> Historical 32-test checkpoint. This record describes the earlier light interface; the current dark interface and slider are covered by later records.
+
 Date: 2026-10-26. Existing repository retained; no backend or runtime dependencies added.
 
 ## Release status
 
-The local core demonstration workflow is verified. The full acceptance criteria are not all complete: embedded-browser reload with the preview server stopped failed, PDF saving was not completed, and hosted publication is blocked by Sites returning project not found. Keep the local preview server running for the presentation. No operational readiness or detection accuracy is claimed.
+The local core demonstration workflow is verified. The full acceptance criteria are not all complete: embedded-browser reload with the preview server stopped failed, PDF saving was not completed,. Keep the local preview server running for the presentation. No operational readiness or detection accuracy is claimed.
 
 ## Changes
 
@@ -78,14 +80,13 @@ Incomplete or failed:
 - With the port-5186 preview server stopped, reloading twice returned a blank root despite cached HTML. Cause was not established. The server was restarted and the application recovered. Do not promise serverless offline reload in this browser.
 - Print/Save as PDF action was invoked, but the browser tool timed out and no PDF file was produced. HTML export is verified; PDF requires a rehearsal in the presentation browser.
 - Drag/drop handlers, exhaustive mobile interactions, maximum-size browser uploads and forced rapid-run race stress were not individually exercised in the browser. Corresponding validation/guards are implemented, but these checks are not claimed as passed.
-- Sites lookup returned `Sites project not found` for the existing project ID; no replacement Site was created and no new hosted release is claimed.
 
 ## Launch
 
 From PowerShell:
 
 ```powershell
-Set-Location 'C:\Users\logme\Documents\Codex\2026-10-25\im-x20\outputs\terralens'
+# Run from the cloned repository root
 npm.cmd ci
 npm.cmd run build
 npm.cmd run preview -- --port 5186 --strictPort

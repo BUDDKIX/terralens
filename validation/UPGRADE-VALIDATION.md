@@ -1,5 +1,7 @@
 # Intelligence and reliability upgrade — measured validation
 
+> Historical 27-test checkpoint. Measurements and browser-access limits below apply to that upgrade only.
+
 The original 13 tests passed before implementation. The production build passed at the baseline and after each implementation phase. The final suite has 27 passing tests. No real-world detection accuracy is claimed.
 
 ## Phases completed

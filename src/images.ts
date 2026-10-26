@@ -87,15 +87,20 @@ export async function cropData(
     w = Math.min(result.width, x1 + margin) - left,
     h = Math.min(result.height, y1 + margin) - top;
   const c = document.createElement("canvas");
-  const s = Math.min(1, 340 / Math.max(w, h));
-  c.width = Math.max(1, Math.round(w * s));
-  c.height = Math.max(1, Math.round(h * s));
+  // Keep the same processing-grid footprint, but retain available source detail.
+  const sourceWidth = image.naturalWidth || image.width,
+    sourceHeight = image.naturalHeight || image.height,
+    cropWidth = (w / result.width) * sourceWidth,
+    cropHeight = (h / result.height) * sourceHeight;
+  const s = Math.min(1, 680 / Math.max(cropWidth, cropHeight));
+  c.width = Math.max(1, Math.round(cropWidth * s));
+  c.height = Math.max(1, Math.round(cropHeight * s));
   c.getContext("2d")!.drawImage(
     image,
-    (left / result.width) * image.width,
-    (top / result.height) * image.height,
-    (w / result.width) * image.width,
-    (h / result.height) * image.height,
+    (left / result.width) * sourceWidth,
+    (top / result.height) * sourceHeight,
+    cropWidth,
+    cropHeight,
     0,
     0,
     c.width,

@@ -2,3 +2,35 @@ node_modules/
 dist/
 *.tsbuildinfo
 .openai/local*
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+.openai/
+
+# Build, test and development caches
+coverage/
+.nyc_output/
+.vite/
+.cache/
+*.log
+
+# Local audit material and generated validation exports
+submission_audit.ps1
+submission_audit.txt
+validation/*.html
+validation/*-inspection.jpg
+validation/*.rgba
+validation/**/*-overlay.rgba
+validation/release-*.png
+validation/release-*.geojson
+validation/polish-mobile.png
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini

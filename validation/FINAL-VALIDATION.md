@@ -1,5 +1,7 @@
 # Final release validation — 2026-10-26
 
+> Historical 38-test checkpoint. See MINIMAL-POLISH.md for the subsequent 39-test checkpoint and browser checks.
+
 Checkpoint before this pass: `0b6e1fb`. The approved dark stylesheet, page layout, comparison modes, numerical detection engine and worker are unchanged.
 
 ## Completed changes
